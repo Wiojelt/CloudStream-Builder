@@ -9,7 +9,6 @@
 <p align="center">
   <a href="https://github.com/Wiojelt/TurkSinema">TurkSinema</a> ·
   <a href="https://github.com/Wiojelt/TurkSpor">TurkSpor</a> ·
-  <a href="https://github.com/Wiojelt">GitHub @Wiojelt</a> ·
   Telegram: <strong>@wioj3lt</strong>
 </p>
 
@@ -21,7 +20,6 @@
 - Sitedeki gerçek kategori adlarını, posterleri, detay bilgilerini ve bölümleri çıkarır.
 - Kaynak seçici, AJAX oynatıcı, iframe ve doğrudan HLS/DASH bağlantılarını ayırt eder.
 - Çoklu kaynakları, kalite etiketlerini ve altyazıları korur.
-- Fragmanları oynatma kaynağına karıştırmadan CloudStream'in fragman alanına ekler.
 - Derlenmiş `.cs3` ile aynı sürüme ait kaynak paketini üretir.
 - Derleme ile gerçek oynatma doğrulamasını birbirinden ayırır.
 
@@ -65,5 +63,5 @@ CloudStream Builder aktif olarak geliştiriliyor. Gösterim deposu açıktır; b
 ---
 
 <p align="center">
-  <sub>CloudStream Builder · Wiojelt</sub>
+  <sub>CloudStream Builder · by Wiojelt</sub>
 </p>
