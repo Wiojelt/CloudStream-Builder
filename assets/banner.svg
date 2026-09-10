@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 420">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#09090b"/><stop offset="1" stop-color="#17112d"/></linearGradient>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#a78bfa"/><stop offset="1" stop-color="#3b82f6"/></linearGradient>
+  </defs>
+  <rect width="1200" height="420" rx="36" fill="url(#bg)"/>
+  <rect x="80" y="92" width="236" height="154" rx="24" fill="url(#g)"/>
+  <path d="M170 126l88 58-88 58z" fill="white"/>
+  <path d="M125 286h148" stroke="#a78bfa" stroke-width="18" stroke-linecap="round"/>
+  <text x="370" y="184" fill="white" font-family="Segoe UI,Arial,sans-serif" font-size="72" font-weight="700">CloudStream</text>
+  <text x="370" y="264" fill="url(#g)" font-family="Segoe UI,Arial,sans-serif" font-size="72" font-weight="800">Builder</text>
+  <text x="374" y="320" fill="#b4b4c0" font-family="Segoe UI,Arial,sans-serif" font-size="27">Katalogdan oynatmaya, doğrulanabilir .cs3 üretimi</text>
+</svg>
