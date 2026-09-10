@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-  <strong>Bir siteyi yalnızca listeleyen değil, katalogdan gerçek oynatmaya kadar inceleyen CloudStream eklenti üretim sistemi.</strong>
+  <strong>Yarı otonom CloudStream eklenti oluşturucu.</strong>
 </p>
 
 <p align="center">
@@ -49,9 +49,20 @@ $cloudstream-builder https://ornek.site için film ve dizi eklentisi oluştur.
 
 Beceri; belirsiz bir kartın medya, açıklama veya gereksiz bölüm olup olmadığını gerektiğinde sorar. Sonraki çalışmalarda doğrulanmış site kalıplarından yararlanır, fakat her sitenin oynatıcı isteğini ayrıca kontrol eder.
 
+## Kurulum
+
+Depoyu klonlayıp `cloudstream-builder` klasörünü Codex becerileri dizinine kopyalayın:
+
+```powershell
+git clone https://github.com/Wiojelt/CloudStream-Builder.git
+Copy-Item -Recurse -Force .\CloudStream-Builder\cloudstream-builder "$env:USERPROFILE\.codex\skills\cloudstream-builder"
+```
+
+Codex yeniden başlatıldıktan sonra beceri `$cloudstream-builder` adıyla kullanılabilir.
+
 ## Durum
 
-CloudStream Builder aktif olarak geliştiriliyor. Gösterim deposu açıktır; beceri kodu ve geliştirme araçları şimdilik özel kaynak deposunda tutulmaktadır. Bu sayfada çalıştırılabilir kaynak kodu veya gizli yapılandırma bulunmaz.
+CloudStream Builder amatör bir geliştirici tarafından geliştirilmektedir ve her türlü katkı, öneri, hata bildirimi ve desteğe açıktır. Beceri kodu, tarifler, ikonlar ve denetim aracı bu tek açık kaynak deposunda yer alır.
 
 ## İlkeler
 
@@ -59,6 +70,12 @@ CloudStream Builder aktif olarak geliştiriliyor. Gösterim deposu açıktır; b
 - Kişisel çerez, token, parola ve cihaz verisini paketlere eklemez.
 - “Derlendi” ile “CloudStream'de oynatıldı” durumlarını ayrı raporlar.
 - Kaynakta bulunmayan altyazı, bölüm veya kaliteyi uydurmaz.
+
+## Teşekkür ve atıf
+
+Bu proje, açık kaynak [ReCloudStream / CloudStream](https://github.com/recloudstream/cloudstream) ekosistemi için bağımsız bir topluluk aracıdır. CloudStream ve ilgili markalar kendi geliştiricilerine aittir; bu depo resmî CloudStream projesi değildir.
+
+Katkıda bulunmak için [issue açabilir](https://github.com/Wiojelt/CloudStream-Builder/issues) veya pull request gönderebilirsiniz.
 
 ---
 

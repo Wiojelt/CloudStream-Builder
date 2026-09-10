@@ -1,0 +1,9 @@
+interface:
+  display_name: "CloudStream Builder"
+  short_description: "Sitelerden çalışır CloudStream eklentileri üretir"
+  icon_small: "../assets/icon.svg"
+  icon_large: "../assets/logo.svg"
+  brand_color: "#7C3AED"
+  default_prompt: "Use $cloudstream-builder to inspect this source and produce a verified CloudStream .cs3 provider."
+policy:
+  allow_implicit_invocation: true
