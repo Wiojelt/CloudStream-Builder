@@ -22,6 +22,13 @@
 - Çoklu kaynakları, kalite etiketlerini ve altyazıları korur.
 - Derlenmiş `.cs3` ile aynı sürüme ait kaynak paketini üretir.
 - Derleme ile gerçek oynatma doğrulamasını birbirinden ayırır.
+- TurkSinema ve TurkSpor'dan çıkarılan denenmiş katalog, player, domain, HLS, ayarlar ve paketleme yöntemlerini karar kütüphanesi olarak kullanır.
+
+## Denenmiş yöntem kütüphanesi
+
+Beceri artık mevcut sağlayıcı depolarını tarayarak kullanılan yaklaşımı sınıflandırabilir. Film/dizi tarafında klasik HTML, kaynak seçici AJAX, özel extractor ve uygulama API'si; canlı yayın tarafında dönen domain, geç çözümlenen kanal kimliği, çoklu yedek kaynak, ülke filtresi ve HLS kalite ayrıştırma modellerini birbirinden ayırır.
+
+Bu yöntemler körlemesine kopyalanmaz. Hedef sitenin istek zinciri eşleşiyorsa uygulanır; derleme, HTTP kontrolü ve gerçek CloudStream oynatması ayrı sonuçlar olarak kaydedilir.
 
 ## Nasıl çalışır?
 
