@@ -1,0 +1,9 @@
+__pycache__/
+*.pyc
+.env
+*.key
+*.pem
+*.jks
+*.keystore
+*.cs3
+*.zip
