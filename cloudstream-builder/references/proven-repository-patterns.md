@@ -90,6 +90,54 @@ For channel-heavy sources, use original logos when reliable. TurkSpor's artwork 
 
 Remote channel rules can hide or remap known bad entries without rebuilding, but must be size-limited, cached, schema-checked, and fail closed to the last usable state.
 
+## Modern architecture patterns (TurkSinema & WioSinema)
+
+### Dynamic domain auto-increment engine (+1 fallback & storage)
+
+When target platforms cycle numeric domains under domain blocks (e.g. `dizipal1581.com`, `dizipal2132.com`), hardcoded domain updates fail quickly. The auto-increment engine ensures resilience:
+
+1. **Persistent storage**: Query `CloudStreamApp.getKey(KEY_DOMAIN)` or `SharedPreferences` first. Fall back to hardcoded seeds only on a cold install.
+2. **Fast sequential probe (+1 to +5)**: On network error, 404, or redirect block, extract the numeric suffix via regex (`r"(\d+)"`), iterate sequentially (`n+1`, `n+2`, `n+3`), and dispatch fast lightweight HEAD/GET checks against a lightweight endpoint (`/search` or homepage).
+3. **Validation & cache write**: Verify characteristic HTML/JSON tokens before accepting the new domain. Immediately persist the validated domain via `CloudStreamApp.setKey` so subsequent requests and future app restarts use the working address without probing overhead.
+4. **In-memory failover**: Update `mainUrl` dynamically so current `search()`, `load()`, and `loadLinks()` continue without throwing user-visible connection failures.
+
+### Direct TMDB aggregator & TV box concurrency throttling
+
+When combining dozens of scrapers under one meta-catalog (e.g. WioSinema / StreamAggregator):
+
+1. **Dual provider tiering**: Separate providers into:
+   - *Direct TMDB providers*: Accept `LinkData` JSON directly into `loadLinks` using TMDB/IMDB IDs (e.g. CineStream, CineCat, ClipBox) without title search latency.
+   - *Scraper providers*: Require fuzzy title search (`search()`), distance/levenshtein matching, `load()`, and `loadLinks()`.
+2. **TV Box mode & memory throttling**: TV boxes and low-spec Android sticks easily crash or drop frames due to thread exhaustion or out-of-memory errors. Implement a togglable TV Box mode:
+   - Dynamic `Semaphore`: Throttles concurrent scrapers to 4 tasks (desktop/mobile defaults to 12).
+   - Reduced link limit (e.g. cap at 15 links vs 50) and shortened HTTP timeouts (7s vs 12s).
+3. **Bulk settings management**: When storing active provider sets, use an `isBulkUpdating` flag to batch SharedPreferences writes and prevent repetitive UI re-renders.
+
+### Fast CDN extractor sorting & priority queue
+
+Slow or P2P/iframe video hosts (e.g. OKRU, Sibnet) cause CloudStream to freeze or stall on initial playback buffering.
+
+1. **Priority sorting**: Sort fast direct CDN and HLS streams (e.g. Vidmoly 1080p, Morencius 1080p HLS, Fastly direct) ahead of slower hosts before emitting to `callback(ExtractorLink)`.
+2. **Direct chapter UUID mapping**: In API-driven platforms (e.g. DiziAsya), query chapter/episode details directly by chapter UUID (`$apiUrl/chapters/$id`) rather than scraping multi-nested index arrays.
+3. **Draft schedule filtering**: Always compare `publishDate` with `System.currentTimeMillis()`. Filter out unreleased schedule drafts that return 404 or empty stream links.
+
+### Broadcaster signed token & geoblock bypass
+
+Official broadcaster sites (e.g. DMAX, Discovery) protect live and VOD streams with geographic IP restrictions and expiring tokens:
+
+1. **Signed publisher redirect**: Route requests through authorized upstream publisher redirect endpoints (e.g. `PublisherId=27` signed redirect) to resolve authenticated master playlists.
+2. **Carousel & tab dynamic scraping**: Parse homepage sections from live DOM attributes (e.g. carousel data, tab anchors) rather than hardcoded category slugs that break when seasonal lineups change.
+
+### BottomSheet touch interception & scroll protection
+
+In Android TV / mobile dialogs containing lengthy scrollable lists (such as provider pickers):
+
+1. **Disable sheet drag**: Standard `ScrollView` does not implement `NestedScrollingChild`. Swiping down to scroll the list triggers `BottomSheetBehavior` touch interception, dismissing the dialog prematurely.
+2. **Resolution**:
+   - Wrap the layout inside `androidx.core.widget.NestedScrollView`.
+   - Set `dialog.behavior.apply { state = BottomSheetBehavior.STATE_EXPANDED; skipCollapsed = true; isDraggable = false }`.
+   - When `isDraggable = false`, touch gestures are delegated entirely to the scroll view, completely eliminating accidental dialog dismissals.
+
 ## Known repository-specific behavior not to turn into a universal rule
 
 - Daily support notices, author contact labels, WARP buttons, and aggregate-vs-individual packaging are product choices, not requirements for every plugin.

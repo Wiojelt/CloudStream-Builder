@@ -25,6 +25,8 @@ Do not infer every card under a `Dizi` category is a film or vice versa. Inspect
 - Server buttons may store `source_index`, `player_type`, content ID, season, or episode in data attributes. Keep these values in the `data` payload passed to `loadLinks`.
 - A detail page may contain only a shell; player HTML can arrive through a same-origin POST. Reproduce the method, fields, headers, and referer exactly.
 - Player URLs may be written into inline scripts or lazy attributes such as `data-src`, `data-vsrc`, and `data-video_url`.
+- In REST/GraphQL API backends (e.g. DiziAsya), fetch chapter and episode details directly by chapter UUID/ID (`$apiUrl/chapters/$id`) rather than scraping multi-nested index arrays.
+- In ongoing series, filter out future unreleased drafts (`publishDate > currentTimeMillis`) that appear in episode schedules but yield 404 or empty stream links.
 - When sources are independent, resolve them concurrently with a small bounded set so one slow server does not block all results. Preserve deterministic labels and isolate failures per source.
 - Search results can use a different card layout than home pages. Give search its own verified selectors.
 

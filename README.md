@@ -20,13 +20,17 @@
 - Sitedeki gerçek kategori adlarını, posterleri, detay bilgilerini ve bölümleri çıkarır.
 - Kaynak seçici, AJAX oynatıcı, iframe ve doğrudan HLS/DASH bağlantılarını ayırt eder.
 - Çoklu kaynakları, kalite etiketlerini ve altyazıları korur.
+- Otomatik alan adı atlama (+1 fallback motoru) ile engellenen domainleri tespit edip hafızaya kaydeder.
+- Hızlı CDN (Vidmoly, Morencius, Fastly) extractor önceliklendirmesiyle oynatma takılmalarını önler.
+- Meta toplayıcı mimarisi (WioSinema StreamAggregator) ve TV Box düşük RAM modu (Semaphore kısıtlaması) sağlar.
+- Android UI BottomSheet kaydırma kapanma koruması (NestedScrollView + isDraggable=false) uygular.
 - Derlenmiş `.cs3` ile aynı sürüme ait kaynak paketini üretir.
 - Derleme ile gerçek oynatma doğrulamasını birbirinden ayırır.
-- TurkSinema ve TurkSpor'dan çıkarılan denenmiş katalog, player, domain, HLS, ayarlar ve paketleme yöntemlerini karar kütüphanesi olarak kullanır.
+- TurkSinema, TurkSpor ve WioSinema'dan çıkarılan denenmiş katalog, player, domain, HLS, ayarlar ve paketleme yöntemlerini karar kütüphanesi olarak kullanır.
 
 ## Denenmiş yöntem kütüphanesi
 
-Beceri artık mevcut sağlayıcı depolarını tarayarak kullanılan yaklaşımı sınıflandırabilir. Film/dizi tarafında klasik HTML, kaynak seçici AJAX, özel extractor ve uygulama API'si; canlı yayın tarafında dönen domain, geç çözümlenen kanal kimliği, çoklu yedek kaynak, ülke filtresi ve HLS kalite ayrıştırma modellerini birbirinden ayırır.
+Beceri artık mevcut sağlayıcı depolarını tarayarak kullanılan yaklaşımı sınıflandırabilir. Film/dizi tarafında klasik HTML, kaynak seçici AJAX, özel extractor, uygulama API'si ve doğrudan TMDB akışı; canlı yayın tarafında dönen domain (+1 motoru), imzalı yayıncı tokenı, geç çözümlenen kanal kimliği, çoklu yedek kaynak, ülke filtresi ve HLS kalite ayrıştırma modellerini birbirinden ayırır.
 
 Bu yöntemler körlemesine kopyalanmaz. Hedef sitenin istek zinciri eşleşiyorsa uygulanır; derleme, HTTP kontrolü ve gerçek CloudStream oynatması ayrı sonuçlar olarak kaydedilir.
 
