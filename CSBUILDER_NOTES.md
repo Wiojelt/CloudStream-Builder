@@ -95,3 +95,18 @@ Bu dosya, tamamlanan her CloudStream eklentisi ve altyapı geliştirmesinden son
   - Klasik `AlertDialog` ve checkbox listesi yerine, Android `Switch` bileşenleri içeren koyu cam kart (`#161B22`) temalı özel `Dialog` tasarımı.
   - Her anahtar (Switch) durumu doğrudan `SharedPreferences.putBoolean` ile saklar; diyalog kapatıldığında anında akış filtreleme motoruna yansır.
 - **Depo Önbellekleme:** `repo.json` içindeki `pluginLists` URL'lerinde zaman damgası sorgu parametreleri (`?t=...`) yerine sabit ham GitHub URL'leri kullanılmalı, CDN önbelleği temiz tutulmalıdır.
+
+---
+
+## 6. TMDB & IMDb Meta Veri Güvenliği ve Arama Optimizasyonu
+- **TMDB HTTP 500 (Internal Server Error) ve Kademeli İstek Fallback'i:**
+  - Bazı dizilerde (örn. Erşan Kuneri - ID 197679) TMDB `append_to_response=videos,credits,recommendations` parametreleriyle çağrıldığında sunucu tarafında 500 hatası üretir ve tüm sayfa yüklemesi çöker.
+  - **Çözüm (Çok Kademeli Fallback):**
+    1. Kademeli `app.get`: Önce zengin parametrelerle dene, hata alınırsa sadece `append_to_response=external_ids` ile çağır, yine hata alınırsa yalın detay adresine geç.
+    2. Eksik IMDb ID'ler için `/external_ids` uç noktasına bağımsız GET isteği at.
+- **Cinemeta (Stremio IMDb) Alternatif Meta Veri Katmanı:**
+  - TMDB sonuç dönmediğinde veya içerik bulunamadığında Stremio'nun açık Cinemeta API'si (`https://v3-cinemeta.strem.io`) devreye girer.
+  - Hem film (`/meta/movie/tt...json`) hem dizi (`/meta/series/tt...json`) bölümleri ve katalog araması (`/catalog/.../top/search=...json`) ile alternatif veri kaynağı sağlanır.
+- **Türkçe Karakter / ASCII Arama Normalizasyonu:**
+  - Çoğu Türkçe film/dizi sağlayıcısı (Dizilla, DiziBox vb.) başlıkları veritabanında Türkçe karaktersiz (ASCII) indeksler.
+  - Arama motorunda `normalizeTr()` fonksiyonu ile `[ş->s, ç->c, ı->i, ğ->g, ü->u, ö->o]` dönüşümü yapılarak sağlayıcılara hem orijinal hem ASCII başlık sorgulanmalı, eşleşme başarısı maksimize edilmelidir.
