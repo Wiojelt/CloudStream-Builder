@@ -17,9 +17,13 @@ Preserve required `Referer`, `Origin`, user agent, and session cookies across th
 
 Resolve relative URLs against the response URL or an effective `<base>` tag, not blindly against the original home page.
 
-## Multiple sources
+## Multiple sources and extractor priority
 
 Keep all observed server choices and language variants. Label results with the site's source name and quality. Catch a failure per source so one dead mirror does not suppress working mirrors. Use bounded concurrency only for independent requests; preserve order where a token or cookie is produced sequentially.
+
+Sort fast direct CDN extractors (e.g. Vidmoly 1080p, Morencius HLS, Fastly) at the top of the emission queue. Slow, rate-limited, or P2P/iframe hosts (e.g. OKRU, Sibnet) should be emitted secondarily. Emitting slow hosts first causes CloudStream's internal player to stall during initial buffering.
+
+For live IPTV streams with freeze/stalling issues on Android/TV devices, advise users to configure CloudStream internal player buffer: Video arabellek boyutu ~70MB, uzunluğu ~3dk, and disk cache set to High/Very High to eliminate playback interruptions without external players.
 
 ## Trailers
 
