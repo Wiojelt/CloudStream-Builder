@@ -83,3 +83,15 @@ Bu dosya, tamamlanan her CloudStream eklentisi ve altyapı geliştirmesinden son
      - **AES Şifre Çözümü:** İframe adresi `embed/#/url/` içeriyorsa Base64 decode edilerek JSON (`ct`, `iv`, `s`) elde edilir ve `AesHelper.cryptoAESHandler` (AES-256-CBC, OpenSSL EVP MD5 anahtar türetimi) ile çözülür.
      - **Doğrudan İframe Fallback:** Bazı sunucular (örn: DOODSTREAM, MAIL.RU) şifresiz doğrudan `<iframe>` verir; bu yüzden şifresiz link kontrolü şarttır.
      - **Paralel Çözümleme:** Senkron döngü yerine Kotlin Coroutines (`coroutineScope`, `async`/`awaitAll`) ile ilk 3-4 fansub ve sunucuları eşzamanlı taranır; bekleme süresi 30 saniyeden 1-2 saniyeye indirilir.
+  4. **URL Şeması Koruması:** `ajax/bolumler` veya `ajax/videosec` gibi görece (relative) AJAX adresleri CloudStream OkHttp/NiceHttp istemcisine doğrudan verilemez (`Expected URL scheme 'http' or 'https'`). Her istek öncesi `fixTurkAnimeUrl` ile mutlak URL'e dönüştürülmelidir.
+
+---
+
+## 5. CloudStream Dağıtım ve UI Kalıpları
+- **İndirirken Hata (Download Mismatch) Çözümü:**
+  - CloudStream, indirilen `.cs3` içindeki `manifest.json` dosyasındaki `version` değeri ile depodaki `plugins.json` içindeki `version` değerini birebir karşılaştırır. Uyuşmazlık durumunda doğrudan "İndirirken hata" verir.
+  - Gradle `version = X` artırıldığında `:make` görevi sonrası üretilen `.cs3` derhal depoya kopyalanmalı, SHA-256 ve dosya boyutu `plugins.json`'a işlenmelidir.
+- **IPTV / Kaynak Seçimi Aç-Kapa (Switch) UI Tasarımı:**
+  - Klasik `AlertDialog` ve checkbox listesi yerine, Android `Switch` bileşenleri içeren koyu cam kart (`#161B22`) temalı özel `Dialog` tasarımı.
+  - Her anahtar (Switch) durumu doğrudan `SharedPreferences.putBoolean` ile saklar; diyalog kapatıldığında anında akış filtreleme motoruna yansır.
+- **Depo Önbellekleme:** `repo.json` içindeki `pluginLists` URL'lerinde zaman damgası sorgu parametreleri (`?t=...`) yerine sabit ham GitHub URL'leri kullanılmalı, CDN önbelleği temiz tutulmalıdır.
