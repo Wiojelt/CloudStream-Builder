@@ -155,3 +155,51 @@ Bu dosya, tamamlanan her CloudStream eklentisi ve altyapı geliştirmesinden son
     - Ziyaretçi token'ı `/web/auth/visitor_login` üzerinden alınır (`Authorization: Bearer <token>`).
     - Kilitli bölümler için `/user/shortPlay/userBase/unlock_ad_episode_v3` uç noktasına `shortPlayId`, `shortPlayEpisodeId`, `shortPlayEpisodeNo` şifreli olarak gönderilir.
     - İstek başarılı olunca `/web/v4/short_play/episode_info` çağrılır ve kilitli bölümün doğrudan CDN video URL'si (`playVoucher`) ve Türkçe altyazıları çekilir.
+
+---
+
+## 11. Bysesukior (JWPlayer) AES-256-GCM Deşifreleme & Dailymotion HLS & Test Deposu Kuralı
+- **Bysesukior / JWPlayer AES-256-GCM:**
+  - `bysesukior.com/api/videos/<code_id>` uç noktası `playback` nesnesi döner.
+  - Anahtar Türetimi: `version` (1-indexed), `idx1 = version - 1`, `idx2 = 31 - version`. `key_parts[idx1]` ve `key_parts[idx2]` Base64URL decode edilip birleştirilerek 32 baytlık AES anahtarı elde edilir.
+  - Şifre Çözümü: `Cipher.getInstance("AES/GCM/NoPadding")` ile `GCMParameterSpec(128, ivBytes)` ve `SecretKeySpec(keyBytes, "AES")` kullanılarak `payloadBytes` deşifre edilir. Elde edilen JSON içindeki `sources` dizisinden doğrudan HLS `.m3u8` master manifesti alınır.
+- **Dailymotion HLS Ayrıştırma:**
+  - `https://www.dailymotion.com/player/metadata/video/<video_id>` uç noktasına `Referer: https://geo.dailymotion.com/` başlığıyla GET isteği atılır.
+  - Dönen JSON'daki `qualities.auto[0].url` doğrudan yüksek hızlı HLS `.m3u8` akışını sunar.
+- **Test Deposu Dağıtım Kuralı:**
+  - Kullanıcı tarafından açıkça ana / prodüksiyon depolara (`TurkSinema`, `TurkSpor`, `WioSinema` vb.) dağıtılması emredilmedikçe, yeni geliştirilen tüm eklentiler varsayılan olarak GitHub test deposuna (`Wiojelt/test`) yüklenir.
+
+---
+
+## 12. HLS / M3U8 Zorunluluğu ve Parçalı Akış Kuralı
+- **Temel Prensip:**
+  - Tüm eklentilerde kaynaklar öncelikle parçalı HLS formatında (`ExtractorLinkType.M3U8`) sunulmalıdır.
+  - Kaynaklarda sabit çözünürlükler (1080p, 720p, 480p) bulunsa bile, CloudStream'in ExoPlayer tamponlama mekanizmasının ve anlık ileri/geri sarmasının kesintisiz çalışması için bunlar doğrudan HLS manifestolarına ve parçalı stream formatına aktarılmalıdır.
+  - MP4 ve statik tek parça video dosyaları özellikle Android TV ve düşük RAM'li cihazlarda donmalara ve çöküşlere yol açtığından M3U8 önceliklendirilmelidir.
+  - Her akış bağlantısına mutlaka hedef oynatıcı domainiyle eşleşen `Referer` ve `User-Agent` başlıkları eklenmelidir.
+
+---
+
+## 13. DiziAsya Çoklu Sağlayıcı & Next.js Görsel Çözümleme Mimarisi
+- **Next.js Optimize Görseller (`/_next/image?url=...`):**
+  - Modern web sitelerinde (DiziAsya gibi) afişler `/_next/image?url=https%3A%2F%2Fapi.diziasya.com...&w=...` şeklinde göreceli optimize parametrelerle sunulur.
+  - CloudStream içerisinde afişlerin boş çıkmaması için `url=` parametresindeki şifreli URL `URLDecoder.decode(..., "UTF-8")` ile çözülmeli ve mutlak `api.diziasya.com/v2/images/posters/...` formatında CloudStream'e teslim edilmelidir.
+- **DiziAsya Sağlayıcı Deşifreleri:**
+  - **Diziasya2, 4Me, P2P, ABStr (Vidstack SPA):** URL hash'i (`#...`) ve AES-128-CBC (`Key: kiemtienmua911ca`, `IV: 1234567890oiuytr`) algoritması ile JSON ayrıştırılır, Cloudflare CDN üzerindeki doğrudan `cfNative` / `source` HLS (`.m3u8`) akışı elde edilir.
+  - **Abyss:** HTML içerisindeki `datas` şifreli metni ayrıştırılır, `https://enc-dec.app/api/dec-abyss` uç noktasına POST edilerek çözülmüş akış kaynakları alınır.
+  - **EV (Morencius):** JS packer ile paketlenmiş kod `getAndUnpack` ile açılarak doğrudan HLS `.m3u8` akışına erişilir.
+  - **Vidmoly & LULU:** CloudStream standart extractor'ları ile HLS formatında çözümlenir.
+  - **OKRU:** Kullanıcı talimatı gereği DiziAsya kaynaklarından tamamen filtrelenir/hariç tutulur.
+
+---
+
+## 14. SupportNotice Pop-up UI & Sıklık Yönetimi
+- **UI Standartları:**
+  - Sabit dar genişlikler (`340dp`) yerine yatay ve TV ekranlarında `450dp`'ye kadar uzanan dinamik genişlik (`minOf((screenWidth * 0.52f).toInt(), dp(450))`) kullanılmalıdır.
+  - MaterialButton bileşenlerinde varsayılan 6dp dikey insets metin kırpılmasına sebep olduğundan `insetTop = 0`, `insetBottom = 0`, `height = 48dp`, `gravity = Gravity.CENTER` tanımlanmalıdır.
+  - Köşe yuvarlamaları `20dp`, iç boşluklar (`24dp, 22dp, 24dp, 18dp`) ile modern koyu cam teması korunmalıdır.
+- **Sıklık ve Senkronizasyon:**
+  - Birden fazla eklentinin ardı ardına pop-up açmasını engellemek için tek bir paylaşımlı `wio_global_support_notice` tercihi ve oturum içi bellek kilidi (`isShownThisSession`) uygulanır.
+  - Günlük veya periyodik gösterimlerde zaman damgası kontrolü (`System.currentTimeMillis() - lastTime > interval`) ile kullanıcıyı boğmayacak şekilde aralıklı tetikleme yapılır.
+
+
