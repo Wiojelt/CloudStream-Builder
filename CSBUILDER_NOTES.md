@@ -124,3 +124,34 @@ Bu dosya, tamamlanan her CloudStream eklentisi ve altyapı geliştirmesinden son
   - Sahte `master.txt` (playmix.uno) fallback'i tamamen iptal edilerek native algoritma ile %100 doğrudan canlı akış elde edilir.
 - **Topluluk / Destek Bildirimi:**
   - Bağımsız gereksiz "Destek" eklentileri (.cs3) depolardan temizlenir; bildirim `SupportNotice` üzerinden günde bir kez açılan şık cam kart arayüzü ile doğrudan Kreosus (`https://kreosus.com/wiojelt`) ve Telegram bağlantılarıyla kullanıcıya sunulur.
+
+---
+
+## 8. CloudStream Önbellek Temizleme (Cache Cleaner) Mimarisi
+- **Kullanıcı Verisini Korumalı Temizlik:**
+  - CloudStream eklentilerinde Ayarlar UI'ına eklenen önbellek temizleme butonu veritabanını (`databases/`), ayarları (`shared_prefs/`) veya giriş oturumlarını silmemelidir.
+  - `context.cacheDir.listFiles()` taranarak yalnızca geçici dosyalar (`cache/` dizini içeriği) silinir.
+  - `app.baseClient.cache?.evictAll()` tetiklenerek OkHttp ağ istek önbelleği boşaltılır.
+  - İşlem sonrasında `Toast` mesajı ile kullanıcıya temizlenen boyut MB/KB cinsinden anında bildirilir.
+
+---
+
+## 9. Spor Tekrarları & OK.RU İkili Periyot Çıkarıcı Mimarisi
+- **Çoklu Periyot / Yarım Ayrıştırma (Basketball Video & Basketball Replays):**
+  - Maç tekrarı sitelerinde (NBA, EuroLeague) maçlar tek bir video yerine "1. Yarı / 2. Yarı" veya "Q1, Q2, Q3, Q4" şeklinde farklı iframe/oynatıcılar altında barındırılır.
+  - Her oynatıcı iframe'i (OK.RU, Dailymotion, Netu, Streamtape vb.) `newEpisode` olarak ayrıştırılmalı ve `season` / `episode` bilgisine periyot adı eklenmelidir.
+  - OK.RU mobil iframe (`//ok.ru/videoembed/...`) doğrudan `OkRuExtractor` veya regex ile HLS/MP4 video kaynaklarına çözülür.
+
+---
+
+## 10. Mini Dizi / Dikey Drama & NetShort Hibrit RSA+AES Kilit Açma Mimarisi
+- **Next.js RSC (React Server Component) Akış Çözümleme:**
+  - `netshort.com` gibi Next.js modern web siteleri sayfa içeriğini HTML gövdesine değil, `self.__next_f.push([1, "..."])` JS akış bloklarına gömer.
+  - Bu bloklar regex ile yakalanıp unescape edildiğinde (`\"` -> `"`, `\\` -> `\`), ham JSON veri dizilerine doğrudan erişilir.
+- **NetShort API RSA-2048 + AES-128 Hibrit Güvenlik Mimarisi:**
+  - **İstek Güvenliği:** 32 baytlık statik veya dinamik AES anahtarı (`5k3KYTOO9jnO0CeyGhdHc3pIjGnVgrMN`), NetShort RSA public key ile şifrelenip HTTP `encrypt-key` başlığına eklenir. JSON gövdesi AES-128/ECB/PKCS5Padding ile şifrelenir.
+  - **Yanıt Çözümleme:** Sunucudan dönen `encrypt-key` başlığı JS istemci paketinden sızdırılan RSA private key ile çözülür, ardından dönen şifreli gövde bu anahtar ile AES-ECB deşifre edilir.
+  - **VIP / Reklam Kilidi Açma (Unlock Ad Episode):**
+    - Ziyaretçi token'ı `/web/auth/visitor_login` üzerinden alınır (`Authorization: Bearer <token>`).
+    - Kilitli bölümler için `/user/shortPlay/userBase/unlock_ad_episode_v3` uç noktasına `shortPlayId`, `shortPlayEpisodeId`, `shortPlayEpisodeNo` şifreli olarak gönderilir.
+    - İstek başarılı olunca `/web/v4/short_play/episode_info` çağrılır ve kilitli bölümün doğrudan CDN video URL'si (`playVoucher`) ve Türkçe altyazıları çekilir.
