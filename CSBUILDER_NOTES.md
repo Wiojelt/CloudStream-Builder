@@ -228,5 +228,22 @@ Bu dosya, tamamlanan her CloudStream eklentisi ve altyapı geliştirmesinden son
   - Kart kapsayıcısı seçilmelidir (`.short_item`, `[id^='entryID']`, `.inf_raited`, `table tr`).
   - Başlık kapsayıcı içindeki `h3` veya başlıktan, afiş ise `.poster img, .full_img img, img` seçicilerinden çekilerek eksiksiz afişli arama ve ana sayfa yanıtı oluşturulmalıdır.
 
+---
+
+## 17. Kesin Depo ve Dağıtım Ayrımı (Wio vs Turk Depoları)
+- **WioSinema Kuralı (Sağlayıcı Mimarisi):**
+  - WioSinema toplu bir sağlayıcı toplayıcıdır (`StreamAggregator`).
+  - Yeni film/dizi kaynakları WioSinema'ya bağımsız `.cs3` eklentisi olarak DEĞİL; `StreamAggregator.kt` içindeki `directTmdbProviders` veya `scraperProviders` listesine dahili bir `MainAPI` sağlayıcısı olarak eklenir. `WioSinema.cs3` derlenip doğrudan `Wiojelt/WioSinema` reposuna yüklenir.
+- **TurkSinema Kuralı (Eklenti Mimarisi):**
+  - TurkSinema modüler bir eklenti deposudur (`Wiojelt/TurkSinema`).
+  - Burada her kaynak (`BingeBang`, `DiziAsya`, vb.) bağımsız bir eklenti (`.cs3`) olarak derlenir ve `TurkSinema/plugins.json` listesine ayrı bir girdi olarak eklenir.
+- **TurkSpor vs WioSpor Ayrımı:**
+  - Basketbol (`BasketballReplays`, `BasketballVideo`) ve benzeri branş/tekrar eklentileri **YALNIZCA TurkSpor** reposuna yüklenir.
+  - `WioSpor` reposuna **ASLA** yüklenmez.
+- **Test Deposu Temizleme Prensibi:**
+  - `Wiojelt/test` deposu sadece geliştirme ve ön test aşamasındaki eklentiler içindir.
+  - Bir eklenti test edilip onaylandıktan sonra ana depolara (`TurkSinema`, `WioSinema`, `TurkSpor`) taşınır ve test deposundan (`test/plugins.json` ve `.cs3` dosyaları) anında temizlenir.
+
+
 
 

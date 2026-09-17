@@ -36,3 +36,4 @@ Use deterministic discovery and packaging from `C:/Users/root/Documents/Codex/20
 - Keep public metadata honest: do not claim playback, subtitle, quality, or device verification that was not observed.
 - All extracted streams must be emitted primarily as chunked HLS (`ExtractorLinkType.M3U8`); even when fixed resolutions (1080p, 720p, 480p) are present, split them into individual chunked HLS streams.
 - Deploy new or experimental providers to `Wiojelt/test` (`builds` branch) first unless user explicitly requests production deployment. Commit message must be empty (`git commit --allow-empty-message -m "  "`).
+- Repository architecture: WioSinema aggregates providers internally into `StreamAggregator` (never as standalone .cs3 plugins); TurkSinema hosts providers as standalone plugins (.cs3). Basketball & sports replays deploy ONLY to TurkSpor (never to WioSpor). Once verified, immediately graduate from and clean up the `test` repository.
