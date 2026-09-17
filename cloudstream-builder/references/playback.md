@@ -25,6 +25,14 @@ Sort fast direct CDN extractors (e.g. Vidmoly 1080p, Morencius HLS, Fastly) at t
 
 For live IPTV streams with freeze/stalling issues on Android/TV devices, advise users to configure CloudStream internal player buffer: Video arabellek boyutu ~70MB, uzunluğu ~3dk, and disk cache set to High/Very High to eliminate playback interruptions without external players.
 
+## Custom player encryption and keystream ciphers (e.g. BingeBang, SPA players)
+
+When sites encrypt player responses with dynamic scripts and CTR-like block ciphers:
+- **Derive keys precisely**: Verify salt, dynamic ticket extraction (e.g. XOR script unpacking), and hash algorithm (SHA256).
+- **Counter starting index**: Custom streaming CTR engines frequently start the block counter at `0` (not `1`). Starting at 1 corrupts the first 32 bytes and leads to invalid JSON / silent playback failures ("bağlantı bulunamadı").
+- **Parallel multi-server resolution**: When multiple servers are available (e.g. Aldebaran, Rigel, Sirius 4K, etc.), query them concurrently with `amap` or async coroutines to avoid multi-second sequential round-trips.
+- **Dual subtitles**: Combine direct server track/VTT subtitles from the resolve API with external subtitle indexers (OpenSubtitles / stremio) using the media's IMDb ID.
+
 ## Trailers
 
 Put YouTube or other trailer URLs in `addTrailer`. Exclude them from player candidates and from `loadLinks`. A trailer iframe proves only trailer availability.

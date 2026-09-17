@@ -202,4 +202,31 @@ Bu dosya, tamamlanan her CloudStream eklentisi ve altyapı geliştirmesinden son
   - Birden fazla eklentinin ardı ardına pop-up açmasını engellemek için tek bir paylaşımlı `wio_global_support_notice` tercihi ve oturum içi bellek kilidi (`isShownThisSession`) uygulanır.
   - Günlük veya periyodik gösterimlerde zaman damgası kontrolü (`System.currentTimeMillis() - lastTime > interval`) ile kullanıcıyı boğmayacak şekilde aralıklı tetikleme yapılır.
 
+---
+
+## 15. BingeBang (bingebang.tv) & Özel Şifre Çözme / Çoklu Sunucu Mimarisi
+- **Script XOR Ticket Çözümü:**
+  - Sayfadaki inline script `var k=[...], d=[...]` dizilerini içerir. `(d[i] xor k[i % k.size]).toChar()` ile deşifre edilerek dinamik `ticket` ve metadata (`imdb`, `season`, `episode`) elde edilir.
+- **Özel SHA-256 CTR Akış Şifresi (Kritik Sayaç Hatası):**
+  - Anahtar Türetme: `SHA256(salt + ticket)` (`salt = "9e2b7c41a0f6d85b3c1e7a94f25d0b86"`).
+  - IV: Base64Url çözümlenmiş ham şifreli verinin ilk 16 baytı. Ciphertext: 16. bayttan sonrası.
+  - **Sayaç Başlangıcı (`counter`):** Standart CTR gibi 1'den değil, **kesinlikle 0'dan** başlar (`counter = 0`). 1'den başlatıldığında ilk 32 bayt ve tüm müteakip bloklar yanlış deşifre edilerek bozuk JSON ve "bağlantı bulunamadı" hatası verir.
+  - Blok Girdisi: `Key[32] + IV[16] + Counter_UInt32_BE[4]` (52 bayt). Keystream = `SHA256(blok_girdisi)`.
+- **8 Sunucu Eşzamanlı Çözümleme (`amap`):**
+  - BingeBang 8 farklı sunucu döndürür (`Aldebaran`, `Rigel`, `Sirius (4K)`, `Yildun`, `Vega`, `Polaris`, `Nashira`, `Fomalhaut`).
+  - Seri döngü yerine `serverList.amap { ... }` ile paralel sorgulanarak tüm sunucular 1-2 saniye içinde HLS M3U8 (`ExtractorLinkType.M3U8`) olarak teslim edilir.
+- **Kapsamlı Altyazı Desteği:**
+  - Hem sunucunun resolve yanıtından dönen `.vtt` altyazıları (`subArr`), hem de script'ten ayrıştırılan IMDb ID üzerinden OpenSubtitles API (`opensubtitles-v3.strem.io`) sorgulanarak Türkçe ve İngilizce altyazılar CloudStream'e aktarılır.
+
+---
+
+## 16. Spor ve Maç Tekrarı Portallarında (BasketballVideo vb.) Afiş Çözümleme
+- **Tuzak:**
+  - Haber ve maç video sitelerinde afiş görseli (`<div class="poster"><a href="..."><img ...></a></div>`) ile başlık metni (`<h3><a href="...">Maç Başlığı</a></h3>`) ayrı kardeş etiketlerde yer alır.
+  - `doc.select("a[href*='replay']")` ile doğrudan linkler dönüldüğünde, resim linkinde metin olmadığı için atlanır; metin linkinde ise resim bulunmadığı için afişler boş kalır.
+- **Çözüm:**
+  - Kart kapsayıcısı seçilmelidir (`.short_item`, `[id^='entryID']`, `.inf_raited`, `table tr`).
+  - Başlık kapsayıcı içindeki `h3` veya başlıktan, afiş ise `.poster img, .full_img img, img` seçicilerinden çekilerek eksiksiz afişli arama ve ana sayfa yanıtı oluşturulmalıdır.
+
+
 
