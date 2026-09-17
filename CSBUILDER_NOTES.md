@@ -110,3 +110,17 @@ Bu dosya, tamamlanan her CloudStream eklentisi ve altyapı geliştirmesinden son
 - **Türkçe Karakter / ASCII Arama Normalizasyonu:**
   - Çoğu Türkçe film/dizi sağlayıcısı (Dizilla, DiziBox vb.) başlıkları veritabanında Türkçe karaktersiz (ASCII) indeksler.
   - Arama motorunda `normalizeTr()` fonksiyonu ile `[ş->s, ç->c, ı->i, ğ->g, ü->u, ö->o]` dönüşümü yapılarak sağlayıcılara hem orijinal hem ASCII başlık sorgulanmalı, eşleşme başarısı maksimize edilmelidir.
+
+---
+
+## 7. CloseLoad & Rapidrame Yeni Nesil Şifreleme ve Destek Mimarisi
+- **CloseLoad / Rapidrame Modern Deşifre Algoritması:**
+  - **Eski Durum:** Sabit fonksiyon adı (`dc_`), sahte JSON-LD `contentUrl` (404 dönen honeypot URL).
+  - **Yeni Mekanizma:**
+    1. Dinamik fonksiyon adı ve değişkenler: `ahk` (20-30 karakterlik anahtar) ve `uwkd` (işlem sırası dizgisi örn: `bvX`, `bIbvb`).
+    2. Operasyon Sırası: Atob (`b`), String ters çevirme (`v`), ROT kaydırma (`qth = (26 - ((code - 64) % 26)) % 26`).
+    3. PRNG Dizi Karıştırma (Shuffle): `cgu = (cgu * 75 + 74) % 65537` formülü ile üretilen indis dizisi üzerinden karakter değişimi.
+    4. XOR Akümülatör Çözümü: `tqinz` ve `mwb` adımlarıyla `(e1b1j ^ nfn)` üzerinden gerçek akış linkine (`.txt` uzantılı HLS m3u8) ulaşılır.
+  - Sahte `master.txt` (playmix.uno) fallback'i tamamen iptal edilerek native algoritma ile %100 doğrudan canlı akış elde edilir.
+- **Topluluk / Destek Bildirimi:**
+  - Bağımsız gereksiz "Destek" eklentileri (.cs3) depolardan temizlenir; bildirim `SupportNotice` üzerinden günde bir kez açılan şık cam kart arayüzü ile doğrudan Kreosus (`https://kreosus.com/wiojelt`) ve Telegram bağlantılarıyla kullanıcıya sunulur.
