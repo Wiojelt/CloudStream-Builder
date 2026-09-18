@@ -251,16 +251,14 @@ Bu dosya, tamamlanan her CloudStream eklentisi ve altyapı geliştirmesinden son
   - CloudStream bir eklentiyi indirirken `plugins.json` içindeki `fileHash` (format: `sha256-<küçük_harf_hex>`), `hash` ve `fileSize` alanlarını indirilen `.cs3` dosyasının gerçek SHA-256 özeti ve bayt boyutuyla katı şekilde kıyaslar.
   - En ufak bir uyuşmazlıkta (örneğin `.cs3` yeniden derlenip versiyon arttırıldığında `fileHash` eski kaldığında ya da başka bir eklentinin boyutu kopyalandığında) CloudStream yüklemeyi keser ve kullanıcıya hiçbir detay vermeden "Hata" / "İndirilemedi" der.
 - **Bütünlük Kilidi (Zorunlu Dağıtım Adımı):**
-  - Her `.cs3` derlemesi veya `plugins.json` güncellemesinden önce ve sonra dosya boyutu ve SHA-256 hash'i KESİNLİKLE script ile otomatik hesaplanmalıdır:
-    ```powershell
-    $size = (Get-Item "Plugin.cs3").Length
-    $hash = (Get-FileHash "Plugin.cs3" -Algorithm SHA256).Hash.ToLower()
+  - Her `.cs3` derlemesi veya `plugins.json` güncellemesinden önce ve sonra dosya boyutu ve SHA-256 hash'i KESİNLİKLE script ile otomatik doğrulanmalı ve düzeltilmelidir:
+    ```bash
+    python cloudstream-builder/scripts/verify_repo_integrity.py <repo_yolu> --fix
+    # Veya tüm depoları tek seferde denetlemek için:
+    python cloudstream-builder/scripts/verify_repo_integrity.py --all
     ```
-  - `plugins.json` içinde:
-    - `fileSize`: `$size` (sayısal bayt boyutu)
-    - `fileHash`: `"sha256-$hash"`
-    - `hash`: `"$hash"`
-  - Asla tahmini veya eski hash bırakılamaz. Dağıtım öncesi `node -e` veya PowerShell ile tüm listedeki dosyaların varlığı ve hash doğruluğu test edilmeden push yapılamaz.
+  - Bu komut listedeki her eklentinin `.cs3` dosyasının fiziksel varlığını, bayt boyutunu ve SHA-256 özetini okur; `plugins.json` içindeki `fileSize`, `fileHash` (`sha256-<hex>`) ve `hash` alanlarıyla birebir eşitler. Sıfır hata raporlanmadan push atılamaz.
+
 - **Eklenti Logosu ve iconUrl Kuralı:**
   - Her eklentinin kendine özel, yüksek çözünürlüklü şeffaf bir logosu (`.png` / `.webp`, tercihen minimum 128x128 kare) bulunmalıdır.
   - Özel depolar (`*-Source`) gizli olduğundan logolar buradan çekilemez (404 verir).

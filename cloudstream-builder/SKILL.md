@@ -25,7 +25,7 @@ Use deterministic discovery and packaging from `C:/Users/root/Documents/Codex/20
 4. Select the closest proven pattern by request shape, not by site appearance or provider name. Implement the observed request chain in Kotlin. Preserve source labels, audio languages, subtitles, referer/origin headers, and required cookies. Keep trailer URLs out of `loadLinks`.
 5. Run `python -m turkstream_studio.workflow build JOB OUTPUT`, then `python C:/Users/root/.codex/skills/cloudstream-builder/scripts/audit_job.py JOB`. Resolve every reported required failure before delivery.
 6. Verify one representative item for each implemented media shape. Build success proves packaging only. Set `playbackVerified` true only after a real CloudStream playback attempt succeeds.
-7. Deliver the `.cs3`, matching source ZIP, and a compact verified/pending report. GitHub publication requires user authorization; for this user's repositories use a completely blank commit message.
+7. Prior to commit/push to ANY repository (`builds` branch), run `python scripts/verify_repo_integrity.py <repo_dir> --fix` to enforce byte size and SHA-256 integrity lock. Never push without passing integrity audit. Deliver the `.cs3`, matching source ZIP, and a compact verified/pending report. Commit message must be completely blank (`git commit --allow-empty-message -m "  "`).
 
 ## Invariants
 

@@ -10,9 +10,11 @@ Before delivery, confirm:
 - Trailers are isolated from playback sources.
 - Multiple servers and subtitles are retained when observed.
 - Gradle produced the intended `.cs3` and the source ZIP matches its version.
+- `plugins.json` integrity check passes: `python scripts/verify_repo_integrity.py <repo_dir> --fix`. Byte size, `fileHash`, and `hash` MUST match the physical `.cs3` byte-for-byte.
 - `status.json` distinguishes build, HTTP smoke checks, and actual playback verification.
 
-Run `python C:/Users/root/.codex/skills/cloudstream-builder/scripts/audit_job.py JOB`. Treat missing job artifacts and contradictory verification flags as failures. The audit is structural; it cannot prove a site's current playback.
+Run `python C:/Users/root/.codex/skills/cloudstream-builder/scripts/audit_job.py JOB`. Run `python scripts/verify_repo_integrity.py <repo_dir>` before push. Treat missing job artifacts, mismatched hashes, and contradictory verification flags as failures. The audit is structural; it cannot prove a site's current playback.
+
 
 ## Device verification
 
