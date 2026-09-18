@@ -1,4 +1,4 @@
-﻿# CloudStream Builder Mimari Referans Notları
+# CloudStream Builder Mimari Referans Notları
 
 > **Not:** Antigravity / Codex skill motorunun ana giriş noktası `cloudstream-builder/SKILL.md` ve altındaki `references/` dizinidir. Bu belge, geliştirme süreçlerinde kazanılan genel mühendislik kalıplarını ve yetenek hafızasını (pattern memory) saklayan teknik referans kılavuzudur.
 
@@ -51,15 +51,17 @@
 
 ---
 
-## 6. Depo Dağıtım Bütünlük Kilidi (Anti-"Hata" Sistemi)
+## 6. Depo Dağıtım Bütünlük Kilidi (Anti-"Hata" ve Anti-"Eski Sürüm" Kilidi)
 - **Kök Neden:**
-  - CloudStream, `plugins.json` içindeki `fileHash` (`sha256-<hex>`), `hash` ve `fileSize` alanlarını indirilen `.cs3` arşiviyle katı şekilde karşılaştırır. 1 baytlık boyut veya en ufak hash uyuşmazlığı kurulumda sessiz "Hata / İndirilemedi" uyarısına yol açar.
+  - CloudStream, `plugins.json` içindeki `version`, `fileHash` (`sha256-<hex>`), `hash` ve `fileSize` alanlarını indirilen `.cs3` arşiviyle katı şekilde karşılaştırır.
+  - Kodda/Gradle'da sürüm artsa bile `plugins.json` içinde sürüm güncellenmezse kullanıcı cihazında güncelleme butonu görünmez ("v1'de kaldı" hatası).
+  - 1 baytlık boyut veya en ufak hash uyuşmazlığı ise kurulumda sessiz "Hata / İndirilemedi" uyarısına yol açar.
 - **Zorunlu Dağıtım Adımı:**
   - Her dağıtım ve güncelleme öncesinde otomatik doğrulama ve düzeltme aracı çalıştırılmalıdır:
     ```bash
     python cloudstream-builder/scripts/verify_repo_integrity.py --all --fix
     ```
-  - Bu araç `.cs3` dosyalarının fiziksel boyut ve SHA-256 özetini okuyup `plugins.json` ile otomatik eşitler. Sıfır hata raporlanmadan depolara push yapılamaz.
+  - Bu araç `.cs3` arşivinin içindeki `manifest.json` dosyasından derlenmiş gerçek sürüm numarasını (`version`), arşivin fiziksel boyutunu (`fileSize`) ve SHA-256 özetini (`fileHash`/`hash`) okuyarak `plugins.json` ile otomatik eşitler. Sıfır hata raporlanmadan depolara push yapılamaz.
 
 ---
 

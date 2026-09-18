@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env python3
+#!/usr/bin/env python3
 """
 verify_repo_integrity.py
 
@@ -15,6 +15,7 @@ import sys
 import os
 import json
 import hashlib
+import zipfile
 import argparse
 
 def audit_and_fix_repo(repo_dir, fix=False, verbose=True):
@@ -57,11 +58,24 @@ def audit_and_fix_repo(repo_dir, fix=False, verbose=True):
             actual_sha = hashlib.sha256(f.read()).hexdigest().lower()
         expected_file_hash = f"sha256-{actual_sha}"
 
+        # Extract compiled version from .cs3 manifest.json
+        cs3_version = None
+        try:
+            with zipfile.ZipFile(cs3_path, "r") as z:
+                if "manifest.json" in z.namelist():
+                    manifest_data = json.loads(z.read("manifest.json").decode("utf-8"))
+                    cs3_version = manifest_data.get("version")
+        except Exception:
+            pass
+
         item_size = p.get("fileSize")
         item_file_hash = p.get("fileHash")
         item_hash = p.get("hash")
+        item_version = p.get("version")
 
         mismatches = []
+        if cs3_version is not None and item_version != cs3_version:
+            mismatches.append(f"version (json={item_version}, cs3={cs3_version})")
         if item_size != actual_size:
             mismatches.append(f"fileSize (json={item_size}, actual={actual_size})")
         if item_file_hash != expected_file_hash:
@@ -73,13 +87,16 @@ def audit_and_fix_repo(repo_dir, fix=False, verbose=True):
             errors += 1
             print(f"  [MISMATCH] {name}: {', '.join(mismatches)}")
             if fix:
+                if cs3_version is not None:
+                    p["version"] = cs3_version
                 p["fileSize"] = actual_size
                 p["fileHash"] = expected_file_hash
                 if "hash" in p:
                     p["hash"] = actual_sha
                 modified = True
                 fixed_count += 1
-                print(f"    -> [AUTO-FIXED] {name} updated to actual size and SHA-256")
+                ver_msg = f" (v{cs3_version})" if cs3_version is not None else ""
+                print(f"    -> [AUTO-FIXED] {name} updated to actual version{ver_msg}, size and SHA-256")
         else:
             if verbose:
                 print(f"  [OK] {name} (v{p.get('version', '?')}) | {actual_size} bytes | {actual_sha[:12]}...")
