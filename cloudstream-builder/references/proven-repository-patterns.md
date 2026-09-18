@@ -138,7 +138,17 @@ In Android TV / mobile dialogs containing lengthy scrollable lists (such as prov
    - Set `dialog.behavior.apply { state = BottomSheetBehavior.STATE_EXPANDED; skipCollapsed = true; isDraggable = false }`.
    - When `isDraggable = false`, touch gestures are delegated entirely to the scroll view, completely eliminating accidental dialog dismissals.
 
+## Advanced playback and extraction patterns (Pattern Memory)
+
+- **Chunked HLS Multi-Stream:** Emitting resolutions primarily as individual chunked HLS streams (`ExtractorLinkType.M3U8`) ensures seamless native playback across Android TV and mobile players.
+- **Parallel Server Resolution (`amap`):** Multi-server sources should resolve concurrently rather than sequentially to keep link load times under 2 seconds.
+- **Inline Script XOR Deobfuscation:** When stream tickets or dynamic tokens are masked in parallel integer arrays, reconstruct via `(d[i] xor k[i % k.size]).toChar()`.
+- **Custom CTR Stream Ciphers:** When sources derive key streams from `SHA256(salt + ticket)`, verify the initial counter index (e.g. 0-based indexing) to avoid keystream desynchronization.
+- **Dual-Period Sports Extractor:** Match video sources segmented across multiple halves/periods should expose each period cleanly as distinct stream options.
+- **Repository Release Integrity Gate:** Every publication to a `plugins.json` catalog must pass strict byte-size and SHA-256 verification using `verify_repo_integrity.py --fix` before push to prevent silent download failures in CloudStream.
+
 ## Known repository-specific behavior not to turn into a universal rule
+
 
 - Daily support notices, author contact labels, WARP buttons, and aggregate-vs-individual packaging are product choices, not requirements for every plugin.
 - Obfuscated or encrypted bootstrap data is not automatically safer and must not contain credentials. Use it only when the authorized source requires non-public endpoint presentation.
