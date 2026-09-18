@@ -244,6 +244,30 @@ Bu dosya, tamamlanan her CloudStream eklentisi ve altyapı geliştirmesinden son
   - `Wiojelt/test` deposu sadece geliştirme ve ön test aşamasındaki eklentiler içindir.
   - Bir eklenti test edilip onaylandıktan sonra ana depolara (`TurkSinema`, `WioSinema`, `TurkSpor`) taşınır ve test deposundan (`test/plugins.json` ve `.cs3` dosyaları) anında temizlenir.
 
+---
+
+## 18. CloudStream "Hata / İndirilemedi" Önleme Kuralı (Bütünlük Kilidi) ve Eklenti Logoları
+- **Kök Neden (Neden "Hata" Verir?):**
+  - CloudStream bir eklentiyi indirirken `plugins.json` içindeki `fileHash` (format: `sha256-<küçük_harf_hex>`), `hash` ve `fileSize` alanlarını indirilen `.cs3` dosyasının gerçek SHA-256 özeti ve bayt boyutuyla katı şekilde kıyaslar.
+  - En ufak bir uyuşmazlıkta (örneğin `.cs3` yeniden derlenip versiyon arttırıldığında `fileHash` eski kaldığında ya da başka bir eklentinin boyutu kopyalandığında) CloudStream yüklemeyi keser ve kullanıcıya hiçbir detay vermeden "Hata" / "İndirilemedi" der.
+- **Bütünlük Kilidi (Zorunlu Dağıtım Adımı):**
+  - Her `.cs3` derlemesi veya `plugins.json` güncellemesinden önce ve sonra dosya boyutu ve SHA-256 hash'i KESİNLİKLE script ile otomatik hesaplanmalıdır:
+    ```powershell
+    $size = (Get-Item "Plugin.cs3").Length
+    $hash = (Get-FileHash "Plugin.cs3" -Algorithm SHA256).Hash.ToLower()
+    ```
+  - `plugins.json` içinde:
+    - `fileSize`: `$size` (sayısal bayt boyutu)
+    - `fileHash`: `"sha256-$hash"`
+    - `hash`: `"$hash"`
+  - Asla tahmini veya eski hash bırakılamaz. Dağıtım öncesi `node -e` veya PowerShell ile tüm listedeki dosyaların varlığı ve hash doğruluğu test edilmeden push yapılamaz.
+- **Eklenti Logosu ve iconUrl Kuralı:**
+  - Her eklentinin kendine özel, yüksek çözünürlüklü şeffaf bir logosu (`.png` / `.webp`, tercihen minimum 128x128 kare) bulunmalıdır.
+  - Özel depolar (`*-Source`) gizli olduğundan logolar buradan çekilemez (404 verir).
+  - Logolar genel erişime açık ana depoların (`TurkSinema`, `TurkSpor` vb.) `main` dalındaki `assets/providers/<EklentiAdı>.png` dizinine kaydedilmeli ve `iconUrl` buna yönlendirilmelidir (`https://raw.githubusercontent.com/Wiojelt/<Repo>/main/assets/providers/<EklentiAdı>.png`).
+  - Genel logo (`assets/logo.png`) yalnızca geçici yer tutucu olarak kullanılabilir; nihai sürümde asla genel logo bırakılmamalıdır.
+
+
 
 
 
