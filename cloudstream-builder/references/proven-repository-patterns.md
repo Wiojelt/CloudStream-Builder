@@ -15,6 +15,7 @@ These patterns were extracted from the current TurkSinema and TurkSpor source tr
 | Large remote channel catalogue | Remote JSON with schema validation, short cache, stable IDs, and a minimal bundled fallback | TurkSpor NetVGold |
 | Country-heavy channel directory | Persist a country filter and expose it through provider settings | TurkSpor DaddyLive and NTVStream |
 | Provider supplies several mirrors | Resolve mirrors independently, discard failed manifests, label and emit every working source | TurkSpor NetVGold and shared `SportsProvider` |
+| TMDb-indexed multi-host streaming portal | Direct TMDb API catalog + multi-host HLS resolvers (VixSrc, VidLink, Videasy) | TurkSinema: Mapple, BingeBang |
 
 ## TurkSinema methods
 
@@ -38,6 +39,19 @@ Do not create a generic extractor from one coincidental regex. Confirm at least 
 ### API/application provider
 
 ClipBox, InatBox, and CNCVerse show that application sources are not HTML providers. Preserve typed models and the actual configuration/content request sequence. Separate reusable crypto/config parsing from catalogue presentation. Resolve short-lived links at playback time. Never store a user's account token, device identifier, or captured personal cookie in source.
+
+### TMDb aggregator and multi-host streaming portal
+
+Portals like Mapple and BingeBang serve rich frontend web catalogs indexed directly by TMDb ID, backed by external streaming host resolvers (VixSrc, VidLink, Videasy):
+
+1. **Catalogue & Search**: Query TMDb endpoints (`trending`, `discover`, `search/multi`, `movie/{id}`, `tv/{id}`) directly for high-fidelity titles, posters, backdrops, year, cast, and trailers via `addTrailer`.
+2. **VixSrc Protocol**:
+   - Query `/api/movie/{tmdbId}` or `/api/tv/{tmdbId}/{season}/{episode}` with proper `Referer: https://vixsrc.to/` to retrieve dynamic embed route (`/embed/{id}?token=...`).
+   - Fetch embed page HTML, extract `token`, `expires`, and playlist base URL.
+   - Request master playlist: `"$baseUrl&token=$token&expires=$expires&h=1&lang=en"`.
+   - Parse `#EXT-X-STREAM-INF` variants into individual chunked HLS streams (`ExtractorLinkType.M3U8`) for distinct resolutions (1080p, 720p, 480p).
+   - Parse `#EXT-X-MEDIA:TYPE=SUBTITLES` to emit multi-language subtitles.
+3. **Fallback hosts**: Forward embed requests to secondary extractors (VidLink, Videasy) to provide redundant streaming paths.
 
 ### Aggregate and individual packages
 
