@@ -267,6 +267,19 @@ Bu dosya, tamamlanan her CloudStream eklentisi ve altyapı geliştirmesinden son
   - Logolar genel erişime açık ana depoların (`TurkSinema`, `TurkSpor` vb.) `main` dalındaki `assets/providers/<EklentiAdı>.png` dizinine kaydedilmeli ve `iconUrl` buna yönlendirilmelidir (`https://raw.githubusercontent.com/Wiojelt/<Repo>/main/assets/providers/<EklentiAdı>.png`).
   - Genel logo (`assets/logo.png`) yalnızca geçici yer tutucu olarak kullanılabilir; nihai sürümde asla genel logo bırakılmamalıdır.
 
+---
+
+## 19. Tek ve Ortak Ayarlar UI Mimarisi (WioSinema & WioSpor Bütünlüğü)
+- **Problem & İhtiyaç:**
+  - WioSinema ve WioSpor ayarlarının birbirinden kopuk olması ve birinde yapılan UI iyileştirmelerinin (örneğin "Önbelleği Temizle" ve "Kaydet ve Kapat" butonlarının tepeye taşınması, modern cam teması vb.) diğerine yansımaması engellenmelidir.
+- **Tek Merkez Mimarisi (`WioCoreSettingsDialog`):**
+  - Hem WioSinema hem de WioSpor ayar ekranı için tek bir ortak çekirdek UI bileşeni kullanılır: `WioCoreSettingsDialog`.
+  - Hiçbir eklenti bağımsız, eski/özel kırmızı ayar bottom sheet'i (`WioSettings.kt`) barındırmaz. `WioSettings.show` çağrısı doğrudan `WioCoreSettingsDialog.show(context, config)` yapısına delege edilir.
+- **Otomatik Gradle Senkronizasyon Kancası (`syncCommonUi`):**
+  - İki ayrı Git deposu bulunduğu için, Gradle derleme sürecine (`preBuild` / `prepareBundleSources`) otomatik senkronizasyon görevi (`syncCommonUi`) entegre edilmiştir.
+  - `WioCoreSettingsDialog.kt` üzerinde yapılan herhangi bir tasarım/UI değişikliği, derleme anında paket ismi (`package dev.wiojelt.turksinema.common` <-> `package turkspor.common`) otomatik dönüştürülerek diğer depoya da senkronize edilir.
+
+
 
 
 
