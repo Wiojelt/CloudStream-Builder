@@ -1,0 +1,21 @@
+{
+  "id": "PlayPutarIn",
+  "name": "PlayPutarIn",
+  "mainUrl": "https://play.putar.in",
+  "requiresReferer": true,
+  "variants": [
+    {
+      "name": "default",
+      "headers": {}
+    }
+  ],
+  "steps": [
+    {
+      "step": "delegate",
+      "url": "{url}",
+      "queryParam": "url"
+    }
+  ],
+  "videoReferer": "",
+  "outputFilter": "adaptive"
+}

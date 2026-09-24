@@ -1,0 +1,30 @@
+{
+  "id": "AnichinStream",
+  "name": "AnichinStream",
+  "mainUrl": "https://anichin.stream",
+  "requiresReferer": true,
+  "idSource": {
+    "type": "query",
+    "param": "id"
+  },
+  "variants": [
+    {
+      "name": "default",
+      "headers": {}
+    }
+  ],
+  "steps": [
+    {
+      "step": "constructUrl",
+      "template": "{mainUrl}/hls/{id}.m3u8"
+    },
+    {
+      "step": "webview",
+      "url": "{url}",
+      "referer": "",
+      "headers": {},
+      "interceptPattern": "(m3u8|mp4)",
+      "timeoutMs": 20000
+    }
+  ]
+}

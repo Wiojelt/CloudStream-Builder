@@ -14,6 +14,7 @@ Use deterministic discovery and packaging from `C:/Users/root/Documents/Codex/20
 - For a new film or series site, read [references/movie-series.md](references/movie-series.md).
 - For live channels or an authorized app API, read [references/live-and-api.md](references/live-and-api.md).
 - For playback extraction, subtitles, trailers, or CloudStream error 2004, read [references/playback.md](references/playback.md).
+- To choose or bundle an existing video host/player resolver, consult the [Unified Extractor Library](extractors/INDEX.md) (50+ OCE extractors + 36+ Turkish extractors).
 - When adapting or learning from an existing provider repository, read [references/proven-repository-patterns.md](references/proven-repository-patterns.md) and use `scripts/scan_provider_patterns.py` for a compact inventory.
 - Before delivery or GitHub publication, read [references/verification-and-release.md](references/verification-and-release.md).
 

@@ -1,0 +1,47 @@
+{
+  "id": "LuluStream",
+  "name": "LuluStream",
+  "mainUrl": "https://luluvdo.com",
+  "requiresReferer": true,
+  "idSource": {
+    "type": "path"
+  },
+  "variants": [
+    {
+      "name": "default",
+      "headers": {}
+    }
+  ],
+  "steps": [
+    {
+      "step": "postForm",
+      "url": "{mainUrl}/dl",
+      "data": {
+        "op": "embed",
+        "file_code": "{id}",
+        "auto": "1",
+        "referer": "{referer}"
+      },
+      "referer": "",
+      "headers": {},
+      "store": "response"
+    },
+    {
+      "step": "regex",
+      "pattern": "",
+      "group": 1,
+      "source": "response",
+      "filter": "",
+      "universal": true,
+      "store": ""
+    },
+    {
+      "step": "webview",
+      "url": "{url}",
+      "referer": "",
+      "headers": {},
+      "interceptPattern": "(m3u8|mp4)",
+      "timeoutMs": 15000
+    }
+  ]
+}

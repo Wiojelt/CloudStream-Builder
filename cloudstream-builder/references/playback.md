@@ -9,6 +9,8 @@ Resolve each source using the narrowest observed mechanism:
 3. Add a focused extractor for an unsupported player host.
 4. Reproduce the site's AJAX/API request when the player is generated dynamically.
 
+For ready-to-use implementations, check the builder's bundled [Unified Extractor Library](../extractors/INDEX.md) containing 50+ global extractors (OCE) and 36+ Turkish host extractors (CloseLoad, RapidVid, VidRame, FirePlayer, Vidmixi, Vk, Dzen, etc.).
+
 Do not emit an iframe page, HTML endpoint, expired token, empty URL, or trailer as a video link. These commonly surface as CloudStream error 2004 or “bağlantı bulunamadı”. A 200 HTML response is not playable-media evidence. All emitted streams must specify target player `Referer` and `User-Agent` headers.
 
 ## Headers and session state
