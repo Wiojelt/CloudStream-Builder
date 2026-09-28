@@ -30,8 +30,9 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      - name: Build Plugins
-        run: ./gradlew make --stacktrace
+      - name: Eklentileri Derle
+        working-directory: main  # gradlew dosyanız hangi klasördeyse (src veya kök dizin)
+        run: ./gradlew make --stacktrace --info
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
