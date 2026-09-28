@@ -31,7 +31,7 @@ jobs:
         run: chmod +x gradlew
 
       - name: Eklentileri Derle
-        working-directory: main  # gradlew dosyanız hangi klasördeyse (src veya kök dizin)
+        working-directory: ./   # gradlew dosyanız hangi klasördeyse (src veya kök dizin)
         run: ./gradlew make --stacktrace --info
 
       - name: Upload Artifacts
