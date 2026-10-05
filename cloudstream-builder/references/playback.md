@@ -4,7 +4,7 @@
 
 Resolve each source using the narrowest observed mechanism:
 
-1. Emit direct chunked `.m3u8` (`ExtractorLinkType.M3U8`) manifests as first priority. Even when fixed resolution choices (1080p, 720p, 480p) are provided by a site or API, map and separate them into chunked HLS streams with explicit `quality` tags. Only fall back to monolithic `.mp4` (`ExtractorLinkType.VIDEO`) when no HLS manifest exists.
+1. Emit direct chunked `.m3u8` (`ExtractorLinkType.M3U8`) manifests as first priority. Keep one master playlist per server so its resolutions appear as player tracks. Do not split its variants into separate Sources entries. If a site supplies only fixed-resolution playlists, see [HLS master handling](hls-master.md). Only fall back to monolithic `.mp4` (`ExtractorLinkType.VIDEO`) when no HLS manifest exists.
 2. Use `loadExtractor` for a supported host iframe.
 3. Add a focused extractor for an unsupported player host.
 4. Reproduce the site's AJAX/API request when the player is generated dynamically.

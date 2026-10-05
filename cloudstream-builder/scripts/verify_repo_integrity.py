@@ -1,150 +1,115 @@
 #!/usr/bin/env python3
-"""
-verify_repo_integrity.py
+"""Verify every local CloudStream catalog against its packaged .cs3 files.
 
-Automated integrity verification & auto-fix system for CloudStream plugin repositories.
-Verifies:
-  - Exact file size match (byte level)
-  - Exact SHA-256 hash match (sha256-<hex> and raw hex)
-  - .cs3 archive existence
-  - Icon URL validity
-With --fix, automatically recalculates and synchronizes plugins.json.
+Use --fix before publishing, then run again without --fix. HTTP checks of the
+published repo.json -> catalog -> package chain remain a separate release step.
 """
 
-import sys
-import os
-import json
-import hashlib
-import zipfile
 import argparse
+import hashlib
+import json
+import sys
+import zipfile
+from pathlib import Path
+from urllib.parse import unquote, urlparse
 
-def audit_and_fix_repo(repo_dir, fix=False, verbose=True):
-    plugins_path = os.path.join(repo_dir, "plugins.json")
-    if not os.path.exists(plugins_path):
-        if verbose:
-            print(f"[SKIP] No plugins.json in {repo_dir}")
-        return 0, 0
 
+DEFAULT_REPOS = [
+    Path(r"C:\Users\root\Downloads\cloudstream-work\TurkSinema-deploy"),
+    Path(r"C:\Users\root\Downloads\cloudstream-work\TurkSpor"),
+    Path(r"C:\Users\root\Downloads\cloudstream-work\WioSpor-builds"),
+    Path(r"C:\Users\root\Downloads\cloudstream-work\WioSinema"),
+    Path(r"C:\Users\root\Downloads\cloudstream-work\test"),
+]
+
+
+def package_path(repo: Path, entry: dict) -> Path:
+    filename = unquote(Path(urlparse(entry.get("url", "")).path).name)
+    candidates = [repo / filename, repo / f"{entry.get('internalName', '')}.cs3"]
+    return next((path for path in candidates if path.is_file()), candidates[0])
+
+
+def audit_catalog(repo: Path, catalog: Path, fix: bool, selected: set[str]) -> tuple[int, int, int]:
     try:
-        with open(plugins_path, "r", encoding="utf-8") as f:
-            plugins = json.load(f)
-    except Exception as e:
-        print(f"[ERROR] Failed to parse {plugins_path}: {e}")
-        return 1, 0
+        entries = json.loads(catalog.read_text(encoding="utf-8"))
+        if not isinstance(entries, list):
+            raise ValueError("catalog must be a JSON array")
+    except (OSError, ValueError) as error:
+        print(f"[ERROR] {catalog}: {error}")
+        return 1, 0, 0
 
-    errors = 0
-    fixed_count = 0
-    modified = False
-
-    if verbose:
-        print(f"\n==================================================")
-        print(f"Auditing: {repo_dir}")
-        print(f"Total plugins in index: {len(plugins)}")
-        print(f"==================================================")
-
-    for p in plugins:
-        name = p.get("name", "Unknown")
-        internal_name = p.get("internalName", name)
-        cs3_filename = f"{internal_name}.cs3"
-        cs3_path = os.path.join(repo_dir, cs3_filename)
-
-        if not os.path.exists(cs3_path):
-            print(f"  [MISSING] {name}: file '{cs3_filename}' not found in repo root!")
-            errors += 1
+    unresolved = changed = checked = 0
+    for entry in entries:
+        if not isinstance(entry, dict):
+            print(f"[ERROR] {catalog}: non-object entry")
+            unresolved += 1
             continue
-
-        actual_size = os.path.getsize(cs3_path)
-        with open(cs3_path, "rb") as f:
-            actual_sha = hashlib.sha256(f.read()).hexdigest().lower()
-        expected_file_hash = f"sha256-{actual_sha}"
-
-        # Extract compiled version from .cs3 manifest.json
-        cs3_version = None
+        name = entry.get("internalName") or entry.get("name") or "<unnamed>"
+        if selected and name not in selected:
+            continue
+        checked += 1
+        package = package_path(repo, entry)
+        if not package.is_file():
+            print(f"[MISSING] {catalog}: {name}: {package.name}")
+            unresolved += 1
+            continue
         try:
-            with zipfile.ZipFile(cs3_path, "r") as z:
-                if "manifest.json" in z.namelist():
-                    manifest_data = json.loads(z.read("manifest.json").decode("utf-8"))
-                    cs3_version = manifest_data.get("version")
-        except Exception:
-            pass
-
-        item_size = p.get("fileSize")
-        item_file_hash = p.get("fileHash")
-        item_hash = p.get("hash")
-        item_version = p.get("version")
-
-        mismatches = []
-        if cs3_version is not None and item_version != cs3_version:
-            mismatches.append(f"version (json={item_version}, cs3={cs3_version})")
-        if item_size != actual_size:
-            mismatches.append(f"fileSize (json={item_size}, actual={actual_size})")
-        if item_file_hash != expected_file_hash:
-            mismatches.append(f"fileHash (json={item_file_hash}, actual={expected_file_hash})")
-        if item_hash and item_hash != actual_sha:
-            mismatches.append(f"hash (json={item_hash}, actual={actual_sha})")
-
+            with zipfile.ZipFile(package) as archive:
+                manifest = json.loads(archive.read("manifest.json"))
+            version = manifest["version"]
+        except (OSError, ValueError, KeyError, zipfile.BadZipFile) as error:
+            print(f"[INVALID] {package}: {error}")
+            unresolved += 1
+            continue
+        data = package.read_bytes()
+        digest = hashlib.sha256(data).hexdigest()
+        expected = {"version": version, "fileSize": len(data), "fileHash": f"sha256-{digest}"}
+        if "hash" in entry:
+            expected["hash"] = digest
+        mismatches = [key for key, value in expected.items() if entry.get(key) != value]
+        if "filesize" in entry:
+            mismatches.append("filesize (obsolete)")
         if mismatches:
-            errors += 1
-            print(f"  [MISMATCH] {name}: {', '.join(mismatches)}")
+            print(f"[MISMATCH] {catalog}: {name}: {', '.join(mismatches)}")
             if fix:
-                if cs3_version is not None:
-                    p["version"] = cs3_version
-                p["fileSize"] = actual_size
-                p["fileHash"] = expected_file_hash
-                if "hash" in p:
-                    p["hash"] = actual_sha
-                modified = True
-                fixed_count += 1
-                ver_msg = f" (v{cs3_version})" if cs3_version is not None else ""
-                print(f"    -> [AUTO-FIXED] {name} updated to actual version{ver_msg}, size and SHA-256")
-        else:
-            if verbose:
-                print(f"  [OK] {name} (v{p.get('version', '?')}) | {actual_size} bytes | {actual_sha[:12]}...")
+                entry.update(expected)
+                entry.pop("filesize", None)
+                changed += 1
+            else:
+                unresolved += 1
 
-    if fix and modified:
-        with open(plugins_path, "w", encoding="utf-8") as f:
-            json.dump(plugins, f, indent=2, ensure_ascii=False)
-            f.write("\n")
-        print(f"\n[SAVED] {plugins_path} written with {fixed_count} auto-fixes.")
+    if fix and changed:
+        catalog.write_text(json.dumps(entries, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+        print(f"[SAVED] {catalog}: {changed} corrected")
+    print(f"[AUDIT] {catalog}: {checked} checked, {unresolved} unresolved")
+    return unresolved, changed, checked
 
-    return errors, fixed_count
 
-def main():
-    parser = argparse.ArgumentParser(description="CloudStream Repository Integrity Auditor & Auto-Fixer")
-    parser.add_argument("repos", nargs="*", help="Paths to plugin repository directories")
-    parser.add_argument("--fix", action="store_true", help="Automatically fix hash and size mismatches in plugins.json")
-    parser.add_argument("--all", action="store_true", help="Scan all standard repositories in workspace")
+def audit_repo(repo: Path, fix: bool, selected: set[str]) -> tuple[int, int, int]:
+    catalogs = [path for path in [repo / "plugins.json", *repo.glob("catalogs/**/plugins.json")] if path.is_file()]
+    if not catalogs:
+        print(f"[ERROR] {repo}: no plugins.json catalog found")
+        return 1, 0, 0
+    results = [audit_catalog(repo, catalog, fix, selected) for catalog in catalogs]
+    return tuple(sum(result[index] for result in results) for index in range(3))
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("repos", nargs="*", type=Path, help="local builds checkout directories")
+    parser.add_argument("--fix", action="store_true", help="synchronize catalog metadata with packages")
+    parser.add_argument("--all", action="store_true", help="audit all existing default repository paths")
+    parser.add_argument("--only", action="append", default=[], metavar="INTERNAL_NAME")
     args = parser.parse_args()
+    repos = [repo for repo in DEFAULT_REPOS if repo.exists()] if args.all or not args.repos else args.repos
+    if not repos:
+        print("[ERROR] no repositories found")
+        return 1
+    results = [audit_repo(repo.resolve(), args.fix, set(args.only)) for repo in repos]
+    unresolved, changed, checked = (sum(result[index] for result in results) for index in range(3))
+    print(f"SUMMARY: {checked} catalog entries checked, {changed} corrected, {unresolved} unresolved")
+    return 1 if unresolved else 0
 
-    default_repos = [
-        r"C:\Users\root\Downloads\cloudstream-work\TurkSinema-deploy",
-        r"C:\Users\root\Downloads\cloudstream-work\TurkSpor",
-        r"C:\Users\root\Downloads\cloudstream-work\WioSpor-builds",
-        r"C:\Users\root\Downloads\cloudstream-work\WioSinema",
-        r"C:\Users\root\Downloads\cloudstream-work\test"
-    ]
-
-    target_repos = args.repos
-    if args.all or not target_repos:
-        target_repos = [r for r in default_repos if os.path.exists(r)]
-
-    total_errors = 0
-    total_fixed = 0
-
-    for repo in target_repos:
-        errs, fixed = audit_and_fix_repo(repo, fix=args.fix, verbose=True)
-        total_errors += errs
-        total_fixed += fixed
-
-    print("\n" + "="*50)
-    print(f"SUMMARY: {total_errors} total issue(s) detected across {len(target_repos)} repo(s).")
-    if args.fix:
-        print(f"AUTO-FIXED: {total_fixed} issue(s) successfully resolved.")
-    print("="*50)
-
-    if total_errors > 0 and not args.fix:
-        sys.exit(1)
-    sys.exit(0)
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())

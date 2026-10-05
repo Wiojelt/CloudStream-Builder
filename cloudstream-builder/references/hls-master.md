@@ -1,0 +1,7 @@
+# One source with player quality tracks
+
+CloudStream's internal player exposes HLS video tracks when it receives one accessible master playlist. Pass the master URL as one `ExtractorLinkType.M3U8` source with the site's required headers. Do not expand it through `M3u8Helper.generateM3u8` when the requested UI is one server in Sources and resolutions in the player's track/part selector.
+
+When a site returns only independent fixed-resolution playlists, there is no master URL to preserve. If the task authorizes a maintained endpoint, generate a short-lived HLS master that references the fresh HTTPS variant URLs. The SeyirTURK FilmModu implementation uses `SeyirTURK/worker/master.js` in `Wiojelt/TurkSpor-Source`: the plugin base64url-encodes the site's current `{height,url}` list; the worker validates it and returns `#EXT-X-STREAM-INF` entries. The worker does not proxy media. Rebuild this URL at `loadLinks` time; do not cache source URLs or claim playback based on a 200 master response alone.
+
+Verify the master response, each variant playlist, and representative video/audio segments with the playback headers. Also check the selected CloudStream player when device use is authorized: a valid manifest does not prove the app shows track choices. If no maintained endpoint is available, retain honest fixed-resolution sources and report the UI limitation instead of inventing a `data:` or inaccessible URL. CloudStream's online player uses HTTP data sources, so a `data:` HLS master is not a reliable fallback.
