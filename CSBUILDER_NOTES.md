@@ -71,3 +71,14 @@
   - Özel (private) kaynak depolarına yönlendiren URL'ler (404 döneceği için) kullanılmamalıdır.
 - **Bağış & Destek Yönlendirmeleri:**
   - Tüm destek bildirimleri, ayar ekranı butonları ve depo sayfalarında tek standart bağış adresi `https://kreosus.com/wiojelt` olarak kullanılır.
+
+---
+
+## 8. Anime ve Dizi Eklentilerinde "Yeni Eklenen Bölümler" Standardı
+- **Kullanıcı İhtiyacı & Amaç:**
+  - Anime ve dizi sağlayıcılarını kullanan kullanıcılar çoğunlukla yeni yayınlanan bölümleri takip etmek için eklentiyi açar.
+  - Sadece genel kategori/tür veya dizi afişi listelemek yetersizdir; anasayfanın (`mainPage`) en başında güncel bölümler yer almalıdır.
+- **Kesin Kural (Zorunlu Standart):**
+  - Tüm dizi ve anime sağlayıcılarında `mainPage` listesinin ilk (en üst) sırasına mutlaka **"Son Bölümler"** veya **"Yeni Eklenen Bölümler"** eklenmelidir.
+  - Kart formatı: Dizi Adı, Sezon ve Bölüm Numarası (`Dizi Adı • X. Sezon Y. Bölüm` veya `Anime • Z. Bölüm`), bölüm görseli/posteri ve doğrudan bölüme giden bağlantı sağlanmalıdır.
+  - Sitenin anasayfasında veya `/son-bolumler`, `/tum-bolumler`, `/akis` gibi akış sayfalarında yer alan bölüm listesi bu kategoriye bağlanmalıdır.
