@@ -4,6 +4,8 @@
 
 Discover navigation categories and home-page sections separately. Include a section only when its cards have a stable title, detail URL, and poster or an intentional fallback. A category name without cards must not be presented as a working row.
 
+For series and anime providers, always provide dedicated "Son Eklenen Bölümler" (Latest Episodes) and "Son Eklenen Filmler" (Latest Movies) sections on the main page (`mainPage`) whenever the source website exposes newly published releases. This guarantees direct discovery of recent episode broadcasts without requiring manual searches.
+
 Use the site's visible category names. Prefer canonical category/archive URLs over inventing query paths. Test page 1 and page 2 before adding pagination.
 
 Clean card and detail titles from the most specific title node. Remove only demonstrated site suffixes such as `izle`, `film izle`, language labels, and the year already stored separately. Do not apply a universal word blacklist that can damage real titles.
