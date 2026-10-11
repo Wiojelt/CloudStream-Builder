@@ -9,7 +9,13 @@ if (roots.length === 0) {
 }
 
 async function get(url) {
-  const response = await fetch(url, { cache: 'no-store', signal: AbortSignal.timeout(15000) });
+  const delim = url.includes('?') ? '&' : '?';
+  const bustUrl = `${url}${delim}_t=${Date.now()}`;
+  const response = await fetch(bustUrl, {
+    cache: 'no-store',
+    headers: { 'Cache-Control': 'no-cache', 'User-Agent': 'CloudStream/3' },
+    signal: AbortSignal.timeout(15000),
+  });
   if (!response.ok) throw new Error(`${response.status} ${url}`);
   return response;
 }
