@@ -35,6 +35,10 @@ When sites encrypt player responses with dynamic scripts and CTR-like block ciph
 - **Parallel multi-server resolution**: When multiple servers are available (e.g. Aldebaran, Rigel, Sirius 4K, etc.), query them concurrently with `amap` or async coroutines to avoid multi-second sequential round-trips.
 - **Dual subtitles**: Combine direct server track/VTT subtitles from the resolve API with external subtitle indexers (OpenSubtitles / stremio) using the media's IMDb ID.
 
+## Two-hop iframe validation (tutorial evidence)
+
+In [50:00–60:00 real video/IDE case study](../../research/tutorial-webdramaturkey-2026-10-12/code-audit/50-60-screen-and-code.md), the player chooser IDs drive `POST /ajax/embed`, returning HTML with a first iframe. Fetching the first iframe supplies a second iframe for the real host. Do not return either HTML wrapper as playable media, and do not assume every host has the same request headers/referer. Reject blank or malformed `src`, `"null"`, unsupported schemes, and unsuccessful/error hosts. Validate independent mirrors and follow the site's authorized chain only. Distinguish an instructor's recorded emulator demonstration from your own live player verification.
+
 ## Trailers
 
 Put YouTube or other trailer URLs in `addTrailer`. Exclude them from player candidates and from `loadLinks`. A trailer iframe proves only trailer availability.
