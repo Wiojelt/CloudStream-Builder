@@ -20,6 +20,10 @@ Run `python C:/Users/root/.codex/skills/cloudstream-builder/scripts/audit_job.py
 
 Use `artemis-android` only when requested or when live app verification is part of the task. Check `adb devices -l` first. If multiple devices are online, ask the user which serial to use. Validate the visible provider, catalog/detail screen, and one playback flow. Record the actual result rather than inferring it from build output.
 
+## Evidence source classification
+
+An instructor saying “video plays” on a historical screen recording is documentary evidence of the tutorial's result, **not current live playback verification**. Record separately: inferred source chain, HTTP manifest and segment responses, emulator recording, and a new actual CloudStream playback attempt. An untested AI-generated code suggestion and `BUILD SUCCESSFUL` have no playback-verification value. Inspect whether `Play` triggers the relevant XHR; ignore advertisement/telemetry requests without assuming they are media. Preserve `Referer` and language per host, with no secret cookies in logs.
+
 ## Packaging
 
 Deliver the `.cs3` and source ZIP produced by the same build. Scan the bundle/source for secrets and machine-specific paths. Keep logs outside the bundle unless they are explicitly requested and sanitized.
