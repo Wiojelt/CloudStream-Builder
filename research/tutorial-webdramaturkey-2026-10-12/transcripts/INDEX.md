@@ -35,3 +35,8 @@ The caption transcript alone is **not** a complete tutorial study. The new [00:0
 ### Görsel kaynak kodu denetimi 20:00–30:00
 
 [20:00–30:00 Kotlin/Logcat/emülatör incelemesi](../code-audit/20-30-screen-and-code.md), [sentetik bölüm/season test fixtürü](../code-audit/fixtures/test_episode_20_30.py). 120 tam ekran örnek üzerinden film/dizi/anime loadResponse değişiklikleri, `N-sezon` URL ayrıştırması, kimi içeriklerde kaynak taraflı boş liste ve 23:25'teki `loadLinks` TODO + `return true` stub tespit edildi. Canlı yayın/oynatma bu bölümde doğrulanmadı.
+
+
+### Kod/HTML analizi 30:00–40:00
+
+[Gerçek IDE, emülatör ve View Source kareleri](../code-audit/30-40-screen-and-code.md); [film/dizi şablonlarına ait 15 test](../code-audit/fixtures/test_detail_30_40.py). Bu analiz ilk 120 tam ekran kare ve yakın planlarla yapıldı. `h1` seçicisi onarımı, filmde ayrı `movDescription` / `movYear`, başka türlerde `description` / `year` ayrımı ve boş `#movie-video` DOM kapsayıcısı kaydedildi. Videodaki ara kod satırlarının nihai derlenen kaynak olduğu iddia edilmez.
