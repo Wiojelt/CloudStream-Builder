@@ -11,7 +11,9 @@ Source: uploaded WebDramaTurkey 63:43 tutorial, timecoded research, and visually
 7. In the demonstrated site an ID form POST was sent to /ajax/embed and the returned HTML exposed iframe[src]. Only reproduce this when the current site Network responses support it.
 8. Resolve each iframe with a proven host loadExtractor or a narrow custom extractor; HTML and iframe pages are not playable ExtractorLink values.
 9. **Mandatory HLS master policy:** emit ONE authentic master M3U8 per server/language in Sources. Never split master variants into independent Sources. Let CloudStream's Parçalar (Tracks) menu expose resolutions and renditions. Never label MP4 as HLS.
-10. Verify separately: build, catalog, search, detail, episodes, source resolution, manifests/segments and real CloudStream playback. Build success and HTTP 200 do not prove playback.
+10. Verify separately: build, catalog, search, detail, episodes, source resolution, manifests/segments and real CloudStream playback.
+11. Optional metadata must be evidence-based: do not invent rating, duration, cast, or recommendations absent from the source. Investigate live DOM, page HTML, and multiple representative detail pages, not only one screen.
+12. For serialized content, test at least one two-season title; inspect the true episode container, href links and season markers, and parse `1. Bölüm`-style labels using tested formats. A fixed `substringBefore` split is fragile; preserve episode-specific URLs and season/episode numbers in `newEpisode` payloads. Build success and HTTP 200 do not prove playback.
 
 ## Failure diagnosis
 
