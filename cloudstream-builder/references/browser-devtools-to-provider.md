@@ -4,7 +4,7 @@ Source: uploaded WebDramaTurkey 63:43 tutorial, timecoded research, and visually
 
 1. Verify public/authorized access and inspect the current site; do not record personal cookies, tokens or credentials.
 2. Collect site navigation URLs. Normalize base and relative URLs, and verify pagination with real page 1 and 2.
-3. Inspect cards for movie, series and anime separately: title, detail URL, poster src/data-src, media classification. The video's div.col selector is site-specific.
+3. Inspect cards for movie, series and anime separately: title, detail URL, poster src/data-src, media classification. The video's div.col selector is site-specific. **Do a DOM-backed CSS selector fixture check:** `class="media media-cover"` matches `div.media.media-cover`, NOT `div.media media-cover` (which looks for a descendant tag). Lazy posters can be on a `div[data-src]`, not `img[src]`; verify poster render on emulator after build. See [code-screen case study](../../research/tutorial-webdramaturkey-2026-10-12/code-audit/00-10-screen-and-code.md) and the adjacent fixture/test.
 4. Preserve a minimal DevTools Network trace: request role, method, safe headers, POST field names, response content type, session ordering and response shape.
 5. Implement and separately test getMainPage, search, load and loadLinks.
 6. Source buttons may carry an ID such as data-embed. Preserve each observed source ID, host label and language; never silently choose only the first host.
