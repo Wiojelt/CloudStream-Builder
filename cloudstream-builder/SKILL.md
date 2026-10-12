@@ -12,6 +12,7 @@ Use deterministic discovery and packaging from `C:/Users/root/Documents/Codex/20
 ## Route the task
 
 - For a new film or series site, read [references/movie-series.md](references/movie-series.md).
+- For browser Inspector/Network, lazy posters, source-button IDs, AJAX, or multi-hop iframes, read [references/browser-devtools-to-provider.md](references/browser-devtools-to-provider.md).
 - For live channels or an authorized app API, read [references/live-and-api.md](references/live-and-api.md).
 - For playback extraction, subtitles, trailers, or CloudStream error 2004, read [references/playback.md](references/playback.md).
 - For all HLS providers (mandatory: one master M3U8 per server; resolutions only in the player's **Parçalar/Video Tracks** menu), read [references/hls-master.md](references/hls-master.md).
