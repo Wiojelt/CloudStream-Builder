@@ -42,3 +42,9 @@ Known local references are implementation examples, not templates to copy blindl
 - `C:/Users/root/Documents/Codex/2026-09-01/c/work/TurkStreamTest/providers/Sinemakolik`
 
 Use a reference only after comparing the current detail page, source buttons, and player network shape.
+
+## Recorded tutorial case: detail-page and episode HTML (not reusable selectors)
+
+See [10:00–20:00 real-screen/code audit](../../research/tutorial-webdramaturkey-2026-10-12/code-audit/10-20-screen-and-code.md) and its [two-season selector fixture](../../research/tutorial-webdramaturkey-2026-10-12/code-audit/fixtures/test_episode_selector.py). The site shown in that tutorial uses a different metadata DOM than the copied starter template: e.g. a `div.media.media-cover[data-src]` poster, `div.text-content` plot, and `div.categories a` genres. Never leave template selectors (such as `div.poster img` or `div.wp-content p`) in a newly built provider without inspecting real HTML. A visually plausible metadata response is not an audited response.
+
+For multi-season content, test **both** `div.episodes a[href]` and the season container, such as `id=season-2` (a tutorial-specific illustration). `1. Bölüm`.substringBefore(" ") yields `1.`, which is not an integer. Use a tested and localized episode-number parser, preserve season number and episode URL, and use a truthful fallback label only when a title is absent. The video first shows an incomplete `newEpisode` draft; do not copy that intermediate state into production.
