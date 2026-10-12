@@ -15,6 +15,8 @@ Source: uploaded WebDramaTurkey 63:43 tutorial, timecoded research, and visually
 11. Optional metadata must be evidence-based: do not invent rating, duration, cast, or recommendations absent from the source. Investigate live DOM, page HTML, and multiple representative detail pages, not only one screen.
 12. For serialized content, test at least one two-season title; inspect the true episode container, href links and season markers, and parse `1. Bölüm`-style labels using tested formats. A fixed `substringBefore` split is fragile; preserve episode-specific URLs and season/episode numbers in `newEpisode` payloads. Build success and HTTP 200 do not prove playback.
 
+Additional real-screen evidence is recorded in the [10:00–20:00 code audit](../../research/tutorial-webdramaturkey-2026-10-12/code-audit/10-20-screen-and-code.md). It shows why stale template metadata selectors must be replaced from DOM evidence, and why a two-season episode list needs a season-aware parser instead of a raw text split. Synthetic fixture tests validate selector assumptions, **not** live website playback.
+
 ## Failure diagnosis
 
 | Symptom | Check |
