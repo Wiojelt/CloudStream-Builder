@@ -38,7 +38,7 @@ Use deterministic discovery and packaging from `C:/Users/root/Documents/Codex/20
 - Preserve working custom source and make narrow fixes from demonstrated failures. Avoid broad retries and scanning unrelated repositories.
 - Keep public metadata honest: do not claim playback, subtitle, quality, or device verification that was not observed.
 - **Kaynaklarda Tekil Sunucu, Parçalarda Kalite Kuralı (ZORUNLU INVARIANT)**: Kaynaklar (Sources) listesinde aynı sunucunun/yayının farklı çözünürlükleri (1080p, 720p, 480p, 360p) ASLA ayrı ayrı linkler olarak basılamaz!
-  1. HLS yayınlarında Master M3U8 asla `M3u8Helper.generateM3u8` ile parçalanmaz; doğrudan tek bir `ExtractorLinkType.M3U8` olarak sunulur. ExoPlayer kaliteleri oynatıcı içindeki "Parçalar" (Video Tracks) menüsünde listeler.
+  1. HLS yayınlarında Master M3U8 asla `M3u8Helper.generateM3u8` ile parçalanmaz; doğrudan tek bir `ExtractorLinkType.M3U8` olarak sunulur. Bu zorunlu kural tüm referans ve örnek kodlardan üstündür. ExoPlayer kaliteleri oynatıcı içindeki "Parçalar" (Video Tracks) menüsünde listeler.
   2. Sabit çözünürlüklü linklerde (MP4 veya bağımsız m3u8), aynı sunucu/dil varyantından yalnızca TEK BİR en yüksek kaliteli link sunulur. Aynı sunucu için 10-15 kopya kalite linki üretmek kesinlikle yasaktır.
   3. Tüm aggregator'lar (WioSinema, WioSpor vb.) sunucu ve ses varyantı bazında katı tekilleştirme yapar; kullanıcı kaynak seçim diyaloğunda her sunucuyu sadece bir kez görür.
 - Deploy new or experimental providers to `Wiojelt/test` (`builds` branch) first unless user explicitly requests production deployment. Commit message must be empty (`git commit --allow-empty-message -m "  "`).
