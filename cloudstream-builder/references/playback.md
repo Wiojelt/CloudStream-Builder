@@ -4,7 +4,7 @@
 
 Resolve each source using the narrowest observed mechanism:
 
-1. Emit direct chunked `.m3u8` (`ExtractorLinkType.M3U8`) manifests as first priority. Keep one master playlist per server so its resolutions appear as player tracks. Do not split its variants into separate Sources entries. If a site supplies only fixed-resolution playlists, see [HLS master handling](hls-master.md). Only fall back to monolithic `.mp4` (`ExtractorLinkType.VIDEO`) when no HLS manifest exists.
+1. Emit a real, accessible HLS **master** `.m3u8` (`ExtractorLinkType.M3U8`) as exactly one source per server/audio variant when the site provides one; its resolutions belong exclusively in the CloudStream player **Parçalar / Video Tracks** selector. Never expand a master into per-resolution Sources (including through `M3u8Helper.generateM3u8`). If a site supplies only separate fixed-resolution playlists, apply the strict [HLS master handling](hls-master.md) fallback, never multiple resolution copies per server. Fall back to `.mp4` (`ExtractorLinkType.VIDEO`) with its real MIME/type, never spoofed HLS, only when no playable HLS stream exists.
 2. Use `loadExtractor` for a supported host iframe.
 3. Add a focused extractor for an unsupported player host.
 4. Reproduce the site's AJAX/API request when the player is generated dynamically.
@@ -21,7 +21,7 @@ Resolve relative URLs against the response URL or an effective `<base>` tag, not
 
 ## Multiple sources and extractor priority
 
-Keep all observed server choices and language variants. Label results with the site's source name and quality. Catch a failure per source so one dead mirror does not suppress working mirrors. Use bounded concurrency only for independent requests; preserve order where a token or cookie is produced sequentially.
+Keep all observed **distinct servers and audio-language variants**, not multiple resolution copies of the same server. Label sources by server and language; qualities are selected in **Parçalar**, not Source labels. Catch a failure per server so one dead mirror does not suppress working mirrors. Use bounded concurrency only for independent requests; preserve order where a token or cookie is produced sequentially.
 
 Sort fast direct CDN extractors (e.g. Vidmoly 1080p, Morencius HLS, Fastly) at the top of the emission queue. Slow, rate-limited, or P2P/iframe hosts (e.g. OKRU, Sibnet) should be emitted secondarily. Emitting slow hosts first causes CloudStream's internal player to stall during initial buffering.
 
