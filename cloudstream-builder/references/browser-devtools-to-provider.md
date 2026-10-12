@@ -23,6 +23,10 @@ A `loadLinks` implementation with a `// TODO` / commented-out `loadExtractor` an
 
 When a source provides `1-sezon`-style episode URLs, parse and validate both season and episode and test a series containing at least two seasons. An empty page may be an accurate source-side condition: never equate empty with `comingSoon` without explicit evidence. Anime `Subbed/Dubbed` labels require source evidence. See the [20:00–30:00 IDE/Logcat visual audit](../../research/tutorial-webdramaturkey-2026-10-12/code-audit/20-30-screen-and-code.md) and [16-case offline fixture](../../research/tutorial-webdramaturkey-2026-10-12/code-audit/fixtures/test_episode_20_30.py).
 
+### Video audit (30:00–40:00): HTML player shell vs actual media
+
+The video contains a visible empty `<div id="movie-video"></div>` in `view-source`, while site JavaScript (including advertising/telemetry scripts) is present. Neither is an `ExtractorLink`. Verify whether a click on **Play** triggers a site-specific XHR/POST and whether its response contains a playable host iframe or real media. Discard tracking/ad scripts from the media evidence chain. The [actual-screen audit](../../research/tutorial-webdramaturkey-2026-10-12/code-audit/30-40-screen-and-code.md) documents when the author realizes no ready media URL appears in page source; the AJAX/source-ID result belongs to the *next* video segment, not this one.
+
 ## Failure diagnosis
 
 | Symptom | Check |
