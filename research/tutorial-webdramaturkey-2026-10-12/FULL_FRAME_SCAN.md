@@ -10,7 +10,7 @@ Kaynak video: 01:03:43.605, 1280×720, H.264, 29.970185 fps (ortalama), 114.594 
 - Ayrıca her **15 saniyede bir** alınmış **255 adet** özgün 1280×720 kare ve önemli değişim zamanı görüntüleri yerel kanıt paketine eklendi.
 - Paket `/mnt/data/CSBuilder_Full_Frame_Analysis_2026-10-12.zip` içinde oluşturuldu; bu dosya GitHub reposunda barındırılmaz, sohbet eki olarak teslim edilir.
 
-**Kesin sınır:** 'Her kareyi sayısal taradık' demek, '114.594 karenin her birinde görünen her kod/sohbet cümlesini tek tek eksiksiz okuyup yazıya geçirdik' demek değildir. Bu ikinci iddia doğrulanamaz. Konuşma transkripti de yoktur; ses kanalı sessizdir.
+**Ek keşif — gömülü altyazılar:** Video görüntüsünün alt bandında Türkçe anlatım cümleleri bulunuyor; AAC sesi sessiz olsa da görünür metin vardır. Bunlar ayrı bir altyazı akışı değil, H.264 görüntü pikselleridir. 1 saniyelik alt bant görüntü dizini ayrıca çıkarılıyor; böyle bir görüntü dizini bile milisaniyelik metinlerin eksiksiz kelime-kelime transkripti sayılamaz.\n\n**Kesin sınır:** 'Her kareyi sayısal taradık' demek, '114.594 karenin her birinde görünen her kod/sohbet cümlesini tek tek eksiksiz okuyup yazıya geçirdik' demek değildir. Bu ikinci iddia doğrulanamaz. Konuşma transkripti de yoktur; ses kanalı sessizdir.
 
 ## Video bilgisine uygulanacak kurallar
 
