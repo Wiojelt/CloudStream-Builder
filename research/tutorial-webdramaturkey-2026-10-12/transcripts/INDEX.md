@@ -49,3 +49,8 @@ The caption transcript alone is **not** a complete tutorial study. The new [00:0
 ### Kod, Network ve ikinci iframe analizi 50:00–60:00
 
 [Gerçek ekran/Kotlin/Logcat teknik raporu](../code-audit/50-60-screen-and-code.md). İlk 120 beş-saniyelik kare, 18 yakın kritik an, AJAX `POST /ajax/embed`, form `id`, referer/header, iki katman iframe çözümleme, farklı hostlar, `loadExtractor` ve emülatör oynatma denemesi incelendi. Test paketi sentetik HTML üzerinde 24 kontrol içerir; gerçek oynatma durumu ayrıca doğrulanmalıdır.
+
+
+### Görsel Gradle, metadata ve Git commit/push analizi 60:00–63:43
+
+[Gerçek IDE ve son kare Git push raporu](../code-audit/60-63-screen-and-code.md). Son 3:43'ten 56 tam kare ve 12 seçilmiş yakın plan: `build.gradle.kts` düzeni (`version`, `authors`, `language`, `status`, `tvTypes`, `iconUrl`), dört kaynak dosyasının commit edilmesi ve son karede `Pushed 1 commit to origin/master` bildirimi. Bu `.cs3` kurulumu kanıtı değildir. [Sentetik 19 test](../code-audit/fixtures/test_metadata_60_63.py) release kanıt kapılarını ayrıştırır.
