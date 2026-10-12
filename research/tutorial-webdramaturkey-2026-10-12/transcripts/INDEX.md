@@ -18,7 +18,7 @@ Source: 63:43.605 uploaded silent-audio screen-recorded CloudStream provider tut
 | 55:00–60:00 | Visually reviewed: 13 captions | [Read](55-60-tr.md) |
 | 60:00–63:43 | Visually reviewed: 8 captions | [Read](60-63-tr.md) |
 
-00:00–10:00 was sampled at 2 fps with an expanded 1200x172-pixel caption band; 10:00–12:08 additionally has partial 2-fps images, while 10:00–30:00 was reviewed at 1 fps from a 1200x110-pixel band. These sampling rates cannot guarantee capture of every short-lived caption. Non-caption image matches (bright web pages, editor) are excluded. Exact frame-by-frame pixel metrics for all 114,594 original frames are in the local evidence package, but those values alone are NOT a complete frame-by-frame semantic transcription. OCR candidates are not accepted without visual review. Source footage remains private and is not uploaded to GitHub.
+00:00–10:00 was sampled at 2 fps with an expanded 1200x172-pixel caption band; 10:00–12:08 additionally has partial 2-fps images, while 10:00–63:43 was reviewed mainly at 1 fps from a 1200x110-pixel band, with some targeted finer screenshots. These sampling rates cannot guarantee capture of every short-lived caption. Non-caption image matches (bright web pages, editor) are excluded. Exact frame-by-frame pixel metrics for all 114,594 original frames are in the local evidence package, but those values alone are NOT a complete frame-by-frame semantic transcription. OCR candidates are not accepted without visual review. Source footage remains private and is not uploaded to GitHub.
 
 Skill method extracted into [browser-devtools-to-provider.md](../../../cloudstream-builder/references/browser-devtools-to-provider.md). Actual playback on the tutorial site has not been reverified.
 
