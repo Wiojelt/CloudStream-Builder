@@ -66,6 +66,16 @@ def audit_catalog(repo: Path, catalog: Path, fix: bool, selected: set[str]) -> t
         expected = {"version": version, "fileSize": len(data), "fileHash": f"sha256-{digest}"}
         if "hash" in entry:
             expected["hash"] = digest
+        url = entry.get("url")
+        if url:
+            import re
+            new_url = re.sub(r"/builds/[0-9a-f]{40}/", "/builds/", url)
+            if "?v=" in new_url:
+                new_url = re.sub(r"\?v=[0-9a-fA-F]+", f"?v={digest[:12]}", new_url)
+            elif "/builds/" in new_url:
+                new_url = f"{new_url.split('?')[0]}?v={digest[:12]}"
+            if new_url != url:
+                expected["url"] = new_url
         mismatches = [key for key, value in expected.items() if entry.get(key) != value]
         if "filesize" in entry:
             mismatches.append("filesize (obsolete)")
