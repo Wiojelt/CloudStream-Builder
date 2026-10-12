@@ -7,6 +7,8 @@ import json
 import sys
 from pathlib import Path
 
+from audit_provider_contracts import scan_paths
+
 
 def read_json(path: Path, errors: list[str]):
     if not path.is_file():
@@ -67,6 +69,11 @@ def main() -> int:
                 errors.append(f"Kotlin source has no {required}")
         if "youtube" in combined.lower() and "addTrailer" not in combined:
             warnings.append("YouTube reference found without addTrailer; check trailer isolation")
+
+        # Conservative static review; warnings need manual confirmation or --strict.
+        for finding in scan_paths([job]):
+            message = f"{finding.rule}: {finding.path}:{finding.line}: {finding.detail}"
+            (errors if finding.severity == "error" else warnings).append(message)
 
     if status:
         built = bool(status.get("built"))
