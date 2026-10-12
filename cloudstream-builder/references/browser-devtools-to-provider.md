@@ -17,6 +17,12 @@ Source: uploaded WebDramaTurkey 63:43 tutorial, timecoded research, and visually
 
 Additional real-screen evidence is recorded in the [10:00–20:00 code audit](../../research/tutorial-webdramaturkey-2026-10-12/code-audit/10-20-screen-and-code.md). It shows why stale template metadata selectors must be replaced from DOM evidence, and why a two-season episode list needs a season-aware parser instead of a raw text split. Synthetic fixture tests validate selector assumptions, **not** live website playback.
 
+### Source-code review gate from filmed 20:00–30:00 lesson
+
+A `loadLinks` implementation with a `// TODO` / commented-out `loadExtractor` and `return true` **does not prove any playable link was delivered**. Treat it as a missing implementation and fail playback verification until the callback emits validated media and CloudStream actually plays it. Likewise, a series response accidentally using `TvType.Movie` or the page URL as the `episodes` parameter is an intermediate coding error, not a working reusable pattern.
+
+When a source provides `1-sezon`-style episode URLs, parse and validate both season and episode and test a series containing at least two seasons. An empty page may be an accurate source-side condition: never equate empty with `comingSoon` without explicit evidence. Anime `Subbed/Dubbed` labels require source evidence. See the [20:00–30:00 IDE/Logcat visual audit](../../research/tutorial-webdramaturkey-2026-10-12/code-audit/20-30-screen-and-code.md) and [16-case offline fixture](../../research/tutorial-webdramaturkey-2026-10-12/code-audit/fixtures/test_episode_20_30.py).
+
 ## Failure diagnosis
 
 | Symptom | Check |
