@@ -1,0 +1,21 @@
+{
+  "source": "synthetic 60-63 video metadata (not verified against current CloudStream API)",
+  "version": 1,
+  "authors": [
+    "kraptor"
+  ],
+  "language": "tr",
+  "description": "Web Drama Turkey - Kore, Çin, Japon Dizileri, Filmleri ve Animeler",
+  "status": 1,
+  "tvTypes": [
+    "AsianDrama",
+    "Movie",
+    "Anime"
+  ],
+  "iconUrl": "https://assets.example.invalid/logos/demo.png",
+  "video_commit_files": 4,
+  "video_git_push_seen": true,
+  "cs3_download_verified": false,
+  "catalog_hash_verified": false,
+  "fresh_device_playback_verified": false
+}
