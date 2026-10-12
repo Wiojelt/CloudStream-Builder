@@ -30,3 +30,8 @@ Skill method extracted into [browser-devtools-to-provider.md](../../../cloudstre
 ## Separate visual code/HTML analysis
 
 The caption transcript alone is **not** a complete tutorial study. The new [00:00–10:20 screen+Kotlin+HTML code audit](../code-audit/00-10-screen-and-code.md) traces actual IntelliJ edits, DOM, selector bug, Gradle/ADB deploy, emulator poster failure and a runnable CSS fixture. The follow-on [10:00–20:00 IDE + DOM + Kotlin audit](../code-audit/10-20-screen-and-code.md) compares template selectors with site-specific metadata, shows `div.episodes a` in a two-season example, and includes a synthetic passing parser fixture. Further time segments will be inventoried separately without treating sampled captions as source code.
+
+
+### Görsel kaynak kodu denetimi 20:00–30:00
+
+[20:00–30:00 Kotlin/Logcat/emülatör incelemesi](../code-audit/20-30-screen-and-code.md), [sentetik bölüm/season test fixtürü](../code-audit/fixtures/test_episode_20_30.py). 120 tam ekran örnek üzerinden film/dizi/anime loadResponse değişiklikleri, `N-sezon` URL ayrıştırması, kimi içeriklerde kaynak taraflı boş liste ve 23:25'teki `loadLinks` TODO + `return true` stub tespit edildi. Canlı yayın/oynatma bu bölümde doğrulanmadı.
