@@ -44,3 +44,8 @@ The caption transcript alone is **not** a complete tutorial study. The new [00:0
 ### Görsel kod ve ağ trafiği analizi 40:00–50:00
 
 [Gerçek IDE/DevTools/HTML ayrıntılı raporu](../code-audit/40-50-screen-and-code.md) ve [18 kontrollü sentetik kaynak seçici testi](../code-audit/fixtures/test_source_picker_40_50.py). Video aralığından 120 tam kare ve kritik yakın planlar incelendi. Network'te Play sonrası POST /ajax/embed (200 + HTML), kaynak seçicide parent div ile iç a/button `data-embed` ayrımı, aynı selected ID'nin iki yerde yinelenmesi ve eksik ilk sunucu ID'si kayda alındı. 50. dakikaya kadar loadLinks'in gerçek playback verdiği kanıtlanmadı.
+
+
+### Kod, Network ve ikinci iframe analizi 50:00–60:00
+
+[Gerçek ekran/Kotlin/Logcat teknik raporu](../code-audit/50-60-screen-and-code.md). İlk 120 beş-saniyelik kare, 18 yakın kritik an, AJAX `POST /ajax/embed`, form `id`, referer/header, iki katman iframe çözümleme, farklı hostlar, `loadExtractor` ve emülatör oynatma denemesi incelendi. Test paketi sentetik HTML üzerinde 24 kontrol içerir; gerçek oynatma durumu ayrıca doğrulanmalıdır.
