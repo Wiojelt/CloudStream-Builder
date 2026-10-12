@@ -12,7 +12,9 @@ Clean card and detail titles from the most specific title node. Remove only demo
 
 ## Detail contract
 
-For a film, collect title, poster, plot, year, tags, actors, rating, recommendations, and trailer when available. For a series, additionally collect season and episode numbers and preserve the episode-specific playback payload.
+For a film, collect title, poster, plot, year, tags, actors, rating, recommendations, and trailer **only when the site actually exposes them**. Do not invent ratings, runtimes, cast, or recommendations to fill empty optional fields. Check HTML source, the live DOM, and representative detail pages before concluding that a field is absent. For a series, additionally collect season and episode numbers and preserve the episode-specific playback payload.
+
+**Episode selector audit (video case study):** Inspect a representative two-season series, locate the actual episode grouping and its `a[href]` nodes, verify both season containers, and preserve canonical episode URLs. Extract episode/season numbers from observed patterns such as `1. Bölüm`; do not assume that `substringBefore(" ")` works for all whitespace, punctuation, or localized numbering. When episode labels lack a title, display a truthful season/episode label instead of inventing an episode title. Verify empty seasons and multiple templates independently. See [DevTools-to-provider tutorial](browser-devtools-to-provider.md).
 
 Classify media from concrete evidence in this order:
 
