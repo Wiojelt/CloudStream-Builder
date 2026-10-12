@@ -27,6 +27,13 @@ When a source provides `1-sezon`-style episode URLs, parse and validate both sea
 
 The video contains a visible empty `<div id="movie-video"></div>` in `view-source`, while site JavaScript (including advertising/telemetry scripts) is present. Neither is an `ExtractorLink`. Verify whether a click on **Play** triggers a site-specific XHR/POST and whether its response contains a playable host iframe or real media. Discard tracking/ad scripts from the media evidence chain. The [actual-screen audit](../../research/tutorial-webdramaturkey-2026-10-12/code-audit/30-40-screen-and-code.md) documents when the author realizes no ready media URL appears in page source; the AJAX/source-ID result belongs to the *next* video segment, not this one.
 
+
+### Video code audit 40:00–50:00: parent/child source-ID mismatch
+
+The [40:00–50:00 original-screen/code audit](../../research/tutorial-webdramaturkey-2026-10-12/code-audit/40-50-screen-and-code.md) documents a real intermediate bug. HTML uses a `div.nav-player-select` container, with selected source `a[data-embed]` and mirror buttons `button[data-embed]` nested inside. Calling `document.select("div.nav-player-select").attr("data-embed")` reads the *parent*, which does not have that attribute, and fails to collect the first source. Instead select actual nested `[data-embed]` elements, preserve first/middle/last choices, deduplicate selected anchor/button copies by stable source ID, and preserve host/language labels. The [18-case synthetic offline fixture](../../research/tutorial-webdramaturkey-2026-10-12/code-audit/fixtures/test_source_picker_40_50.py) reproduces the failure. This is a **site-specific DOM lesson**, not universal `data-embed` syntax.
+
+The video shows an observed `POST /ajax/embed` with `text/html` response and iframe, but HTML/iframe is not playable media. When Play creates many requests, check request/response *function* rather than trusting the first successful request or advertisement. Do not leak live tokenized URLs, cookies or device data into logs. An `ExtractorLink` needs real media resolution and separate playback validation.
+
 ## Failure diagnosis
 
 | Symptom | Check |
