@@ -12,6 +12,7 @@ Use deterministic discovery and packaging from `C:/Users/root/Documents/Codex/20
 ## Route the task
 
 - For a new film or series site, read [references/movie-series.md](references/movie-series.md).
+- For building providers by inspecting browser DevTools/Network or debugging dynamically generated iframe players, read [references/browser-devtools-to-provider.md](references/browser-devtools-to-provider.md).
 - For live channels or an authorized app API, read [references/live-and-api.md](references/live-and-api.md).
 - For playback extraction, subtitles, trailers, or CloudStream error 2004, read [references/playback.md](references/playback.md).
 - For one source per server with HLS resolutions in the player's quality menu, read [references/hls-master.md](references/hls-master.md).
