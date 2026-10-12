@@ -25,3 +25,8 @@ Skill method extracted into [browser-devtools-to-provider.md](../../../cloudstre
 ## Overall transcription status — 2026-10-12
 
 **135 distinct on-screen instruction statements** were registered in 13 time ranges covering 00:00–63:43. Duplicate frames and repeated caption holds were collapsed. This is a **visually sampled caption transcript**, not a verifiable word-for-word transcript of every single displayed frame. 00:00–10:00 sections used 2 FPS; the following sections chiefly used 1 FPS (with some finer targeted frames). Audio is silent; there are no spoken words to transcribe. Independent playback against the current website is unverified.
+
+
+## Separate visual code/HTML analysis
+
+The caption transcript alone is **not** a complete tutorial study. The new [00:00–10:20 screen+Kotlin+HTML code audit](../code-audit/00-10-screen-and-code.md) traces actual IntelliJ edits, DOM, selector bug, Gradle/ADB deploy, emulator poster failure and a runnable CSS fixture. Further time segments will be inventoried separately without treating the sampled caption transcript as source code.
