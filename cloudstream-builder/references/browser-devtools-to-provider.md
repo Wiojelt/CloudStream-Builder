@@ -8,7 +8,7 @@ Source: uploaded WebDramaTurkey 63:43 tutorial, timecoded research, and visually
 4. Preserve a minimal DevTools Network trace: request role, method, safe headers, POST field names, response content type, session ordering and response shape.
 5. Implement and separately test getMainPage, search, load and loadLinks.
 6. Source buttons may carry an ID such as data-embed. Preserve each observed source ID, host label and language; never silently choose only the first host.
-7. In the demonstrated site an ID form POST was sent to /ajax/embed and the returned HTML exposed iframe[src]. Only reproduce this when the current site Network responses support it.
+7. In the demonstrated site an ID form POST was sent to /ajax/embed and the returned HTML exposed iframe[src]. Only reproduce this when the current site Network responses support it. If requests are absent in static HTML or on initial page load, **press Play and then inspect new Network requests**. Distinguish ad/tracker network traffic from player requests by inspecting response payload, resulting iframe, manifest, or actual media. Do not presume the first new request is the stream.
 8. Resolve each iframe with a proven host loadExtractor or a narrow custom extractor; HTML and iframe pages are not playable ExtractorLink values.
 9. **Mandatory HLS master policy:** emit ONE authentic master M3U8 per server/language in Sources. Never split master variants into independent Sources. Let CloudStream's Parçalar (Tracks) menu expose resolutions and renditions. Never label MP4 as HLS.
 10. Verify separately: build, catalog, search, detail, episodes, source resolution, manifests/segments and real CloudStream playback.
@@ -28,6 +28,6 @@ Source: uploaded WebDramaTurkey 63:43 tutorial, timecoded research, and visually
 
 ## Evidence safeguards
 
-Video includes fixes, unsuccessful host resolution, emulator experiments, and AI-generated proposals. Mark unresolved playback as unverified. Its AAC audio is silent; narration is rendered on-screen Turkish text, NOT a spoken-word transcript. Do not turn site-specific shortcuts, URL, CSS or AJAX into universal rules.
+Video includes fixes, unsuccessful host resolution, emulator experiments, and AI-generated proposals. At approximately 59:53 the tutorial author reports playback success on the recorded emulator; treat this as a historical demonstration, not proof of present-day playback on a fresh device. Mark unresolved playback as unverified. Its AAC audio is silent; narration is rendered on-screen Turkish text, NOT a spoken-word transcript. Do not turn site-specific shortcuts, URL, CSS or AJAX into universal rules.
 
 See [movie-series.md](movie-series.md), [playback.md](playback.md), [hls-master.md](hls-master.md), [verification-and-release.md](verification-and-release.md).
