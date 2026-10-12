@@ -20,6 +20,10 @@ Run `python C:/Users/root/.codex/skills/cloudstream-builder/scripts/audit_job.py
 
 Use `artemis-android` only when requested or when live app verification is part of the task. Check `adb devices -l` first. If multiple devices are online, ask the user which serial to use. Validate the visible provider, catalog/detail screen, and one playback flow. Record the actual result rather than inferring it from build output.
 
+## No false-positive loadLinks gate
+
+Do **not** mark playback success if `loadLinks` returns `true` without invoking its playable-link callback, especially when `loadExtractor` is still commented out or TODO. Separate provider catalog/detail/episode UI from a genuine playable media link and a completed device playback test. The [20:00–30:00 video code audit](../../research/tutorial-webdramaturkey-2026-10-12/code-audit/20-30-screen-and-code.md) demonstrates exactly this incomplete stage.
+
 ## Evidence source classification
 
 An instructor saying “video plays” on a historical screen recording is documentary evidence of the tutorial's result, **not current live playback verification**. Record separately: inferred source chain, HTTP manifest and segment responses, emulator recording, and a new actual CloudStream playback attempt. An untested AI-generated code suggestion and `BUILD SUCCESSFUL` have no playback-verification value. Inspect whether `Play` triggers the relevant XHR; ignore advertisement/telemetry requests without assuming they are media. Preserve `Referer` and language per host, with no secret cookies in logs.
