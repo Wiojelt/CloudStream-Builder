@@ -1,5 +1,9 @@
 # Verification and release
 
+## Build metadata is not a repository release (video 60:00–63:43)
+
+The [original-screen tutorial audit](../../research/tutorial-webdramaturkey-2026-10-12/code-audit/60-63-screen-and-code.md) shows `version = 1`, `authors`, `language`, `description`, `status`, `tvTypes` and an external `iconUrl` being edited in `build.gradle.kts`, followed by IntelliJ displaying **4 files committed** and **Pushed 1 commit to origin/master**. This confirms the recorded Git operation, **not** a published `.cs3` or a working plugin install. Build again **after** final metadata edits; inspect the output manifest, ensure advertised `tvTypes` match real MainAPI/`load` shapes, and verify icon reachability. The video's status code comment is historical and must not override the current SDK. For Wiojelt, repository-specific blank commit-message convention and complete `repo.json` → catalogs → package hash, byte-size and install checks take priority. A local [19-case synthetic evidence test](../../research/tutorial-webdramaturkey-2026-10-12/code-audit/fixtures/test_metadata_60_63.py) distinguishes these gates but is not a real build or playback test.
+
 ## Required gates
 
 Before delivery, confirm:
