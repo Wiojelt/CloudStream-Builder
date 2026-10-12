@@ -34,7 +34,11 @@ class OrnekProvider : MainAPI() {
     private fun org.jsoup.nodes.Element.toSearchResult(): SearchResponse? {
         val title = this.selectFirst("h2.title")?.text() ?: return null
         val href = fixUrl(this.selectFirst("a")?.attr("href") ?: return null)
-        val posterUrl = fixUrlNull(this.selectFirst("img")?.attr("src"))
+        // Prefer a lazy-loading poster when the site stores it in data-src.
+        val posterEl = this.selectFirst("[data-src]") ?: this.selectFirst("img[src]")
+        val posterPath = posterEl?.attr("data-src")?.takeIf { it.isNotBlank() }
+            ?: posterEl?.attr("src")?.takeIf { it.isNotBlank() }
+        val posterUrl = fixUrlNull(posterPath)
 
         return newMovieSearchResponse(title, href, TvType.Movie) {
             this.posterUrl = posterUrl
@@ -98,14 +102,27 @@ class OrnekProvider : MainAPI() {
         callback: (ExtractorLink) -> Unit
     ): Boolean {
         val document = app.get(data).document
+        var emittedLinks = 0
 
-        // Sayfa içindeki iframe veya embed kaynaklarını tara
-        document.select("iframe").forEach { iframe ->
-            val iframeUrl = fixUrl(iframe.attr("src"))
-            // Desteklenen hazır extractor'lara yönlendir (m3u8, Rapidstream, Vidmoly vb.)
-            loadExtractor(iframeUrl, data, subtitleCallback, callback)
+        // Example only: site-specific AJAX/source buttons still require Network inspection.
+        // A detected iframe does not mean that an actual playable link was produced.
+        document.select("iframe[src]").forEach { iframe ->
+            val iframeUrl = fixUrlNull(iframe.attr("src")) ?: return@forEach
+            if (!iframeUrl.startsWith("https://") && !iframeUrl.startsWith("http://")) {
+                return@forEach
+            }
+            try {
+                loadExtractor(iframeUrl, data, subtitleCallback) { link ->
+                    emittedLinks++
+                    callback(link)
+                }
+            } catch (e: kotlinx.coroutines.CancellationException) {
+                throw e
+            } catch (_: Exception) {
+                // One failed mirror should not suppress other independent sources.
+            }
         }
 
-        return true
+        return emittedLinks > 0
     }
 }
