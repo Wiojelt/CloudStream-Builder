@@ -42,3 +42,12 @@ At approx. **59:53**, the tutorial author states “evet video oynuyor her şey 
 4. Have user review the research branch diff before merging into `main`. No new live provider release has been produced from this video.
 
 **Status:** time-ranged **sampled transcription finished**, skill research draft completed, full word-for-word all-frame verification **not completed**.
+
+
+## Görsel kaynak kodu denetimi tamamlandı (ek çalışma)
+
+Ekrandaki yazıların örneklemeli dökümünden **ayrı olarak** IDE, tarayıcı HTML'i, DevTools, Logcat, emülatör, Gradle ve Git ekranları 7 teknik bölüme ayrılarak incelendi: [00–10](code-audit/00-10-screen-and-code.md), [10–20](code-audit/10-20-screen-and-code.md), [20–30](code-audit/20-30-screen-and-code.md), [30–40](code-audit/30-40-screen-and-code.md), [40–50](code-audit/40-50-screen-and-code.md), [50–60](code-audit/50-60-screen-and-code.md), [60–63:43](code-audit/60-63-screen-and-code.md). HTML selector/class, film/dizi metadata, iki sezon, kaynak kimlikleri, AJAX, çift iframe, Gradle ve Git push adımlarında somut hatalar/süreçler belgelendi. **Son karede `Pushed 1 commit to origin/master` görüldü**; canlı `.cs3` yayınlama veya güncel oynatma doğrulanmadı. Sentetik HTML/Python testleri video vaka çalışmasına aittir, canlı Kotlin build'e değil.
+
+### Güvenli main entegrasyonu
+
+[MAIN_RECONCILIATION.md](MAIN_RECONCILIATION.md) belgesini izle: araştırma dalı ve main ayrışmıştır; ana HLS master/Parçalar, mevcut release bütünlüğü ve depo kurallarını koruyarak yeni main-tabanlı dala yalnız eklemeli değişiklikler alınmalı. **Main bu aşamada değiştirilmedi.**
