@@ -40,3 +40,7 @@ The caption transcript alone is **not** a complete tutorial study. The new [00:0
 ### Kod/HTML analizi 30:00–40:00
 
 [Gerçek IDE, emülatör ve View Source kareleri](../code-audit/30-40-screen-and-code.md); [film/dizi şablonlarına ait 15 test](../code-audit/fixtures/test_detail_30_40.py). Bu analiz ilk 120 tam ekran kare ve yakın planlarla yapıldı. `h1` seçicisi onarımı, filmde ayrı `movDescription` / `movYear`, başka türlerde `description` / `year` ayrımı ve boş `#movie-video` DOM kapsayıcısı kaydedildi. Videodaki ara kod satırlarının nihai derlenen kaynak olduğu iddia edilmez.
+
+### Görsel kod ve ağ trafiği analizi 40:00–50:00
+
+[Gerçek IDE/DevTools/HTML ayrıntılı raporu](../code-audit/40-50-screen-and-code.md) ve [18 kontrollü sentetik kaynak seçici testi](../code-audit/fixtures/test_source_picker_40_50.py). Video aralığından 120 tam kare ve kritik yakın planlar incelendi. Network'te Play sonrası POST /ajax/embed (200 + HTML), kaynak seçicide parent div ile iç a/button `data-embed` ayrımı, aynı selected ID'nin iki yerde yinelenmesi ve eksik ilk sunucu ID'si kayda alındı. 50. dakikaya kadar loadLinks'in gerçek playback verdiği kanıtlanmadı.
