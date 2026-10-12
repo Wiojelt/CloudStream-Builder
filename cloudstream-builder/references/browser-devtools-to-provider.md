@@ -34,6 +34,14 @@ The [40:00–50:00 original-screen/code audit](../../research/tutorial-webdramat
 
 The video shows an observed `POST /ajax/embed` with `text/html` response and iframe, but HTML/iframe is not playable media. When Play creates many requests, check request/response *function* rather than trusting the first successful request or advertisement. Do not leak live tokenized URLs, cookies or device data into logs. An `ExtractorLink` needs real media resolution and separate playback validation.
 
+### Recorded multi-hop iframe case study (50:00–60:00)
+
+The [real-screen 50:00–60:00 analysis](../../research/tutorial-webdramaturkey-2026-10-12/code-audit/50-60-screen-and-code.md) observes this exact progression: a page's selected/mirror `[data-embed]` IDs, deduplicated, become form `id` values in site-specific `POST /ajax/embed` (`X-Requested-With`, form-URL-encoded body and page referer), returning HTML with `iframe[src]`. The iframe is requested, and the response supplies **another** embedded host iframe for `loadExtractor`.
+
+Do not copy the demonstration's `mapNotNull { it.attr("data-embed") }` without blank-value filtering: `attr()` may return empty text. Likewise, `selectFirst("iframe")?.attr("src").toString()` can lead to a literal `"null"` URL. Check presence and scheme, resolve relative URLs against the correct response URL, preserve referer according to the **target host**, and isolate one mirror's failure from other hosts. Log response status and safe shape, not signed iframe URLs, tokens or full user data.
+
+The tutorial author reports playback around 59:50 and emulator player UI appears. This is historical demonstration evidence, **not current independent CloudStream verification**. A successful Gradle build, HTML iframe, or spinner does not establish a working source. The local synthetic replay/test suite has 24 passing assertions; this is not a live-player test.
+
 ## Failure diagnosis
 
 | Symptom | Check |
