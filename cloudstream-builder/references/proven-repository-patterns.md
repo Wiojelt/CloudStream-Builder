@@ -49,7 +49,7 @@ Portals like Mapple and BingeBang serve rich frontend web catalogs indexed direc
    - Query `/api/movie/{tmdbId}` or `/api/tv/{tmdbId}/{season}/{episode}` with proper `Referer: https://vixsrc.to/` to retrieve dynamic embed route (`/embed/{id}?token=...`).
    - Fetch embed page HTML, extract `token`, `expires`, and playlist base URL.
    - Request master playlist: `"$baseUrl&token=$token&expires=$expires&h=1&lang=en"`.
-   - Parse `#EXT-X-STREAM-INF` variants into individual chunked HLS streams (`ExtractorLinkType.M3U8`) for distinct resolutions (1080p, 720p, 480p).
+   - If a genuine master HLS playlist exists, emit **one** `ExtractorLinkType.M3U8` link per server/language for the master URL. Do **not** split `#EXT-X-STREAM-INF` resolutions into individual Sources entries; CloudStream's **Parçalar (Tracks)** menu handles quality selection.
    - Parse `#EXT-X-MEDIA:TYPE=SUBTITLES` to emit multi-language subtitles.
 3. **Fallback hosts**: Forward embed requests to secondary extractors (VidLink, Videasy) to provide redundant streaming paths.
 
@@ -90,7 +90,7 @@ Add a mode only after observing its full request chain. Bound page size, identif
 
 ### HLS quality and audio
 
-Fetch a candidate playlist before labeling it successful. If it is a master playlist, resolve relative variants, parse resolution/bandwidth, and emit quality-sorted links. Keep the master URL when separate `EXT-X-MEDIA` audio renditions could be lost by selecting only a video variant.
+Fetch a candidate playlist before labeling it successful. If it is a master playlist, validate its relative variants, bandwidth and `EXT-X-MEDIA` tracks but emit only the original master M3U8 link for the given server/language. Resolutions and audio tracks belong in the player's **Parçalar** menu, never as separate Sources entries.
 
 ### Multi-source and fallback catalogues
 
@@ -154,7 +154,7 @@ In Android TV / mobile dialogs containing lengthy scrollable lists (such as prov
 
 ## Advanced playback and extraction patterns (Pattern Memory)
 
-- **Chunked HLS Multi-Stream:** Emitting resolutions primarily as individual chunked HLS streams (`ExtractorLinkType.M3U8`) ensures seamless native playback across Android TV and mobile players.
+- **Chunked HLS Multi-Stream:** Emit an authentic HLS master playlist as a **single** `ExtractorLinkType.M3U8` source per server/language and let the player's **Parçalar** menu select quality. Do not split variants.
 - **Parallel Server Resolution (`amap`):** Multi-server sources should resolve concurrently rather than sequentially to keep link load times under 2 seconds.
 - **Inline Script XOR Deobfuscation:** When stream tickets or dynamic tokens are masked in parallel integer arrays, reconstruct via `(d[i] xor k[i % k.size]).toChar()`.
 - **Custom CTR Stream Ciphers:** When sources derive key streams from `SHA256(salt + ticket)`, verify the initial counter index (e.g. 0-based indexing) to avoid keystream desynchronization.
