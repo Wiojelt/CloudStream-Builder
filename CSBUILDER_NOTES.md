@@ -32,10 +32,12 @@
 
 ---
 
-## 4. HLS / M3U8 Parçalı Akış Zorunluluğu
-- **Kesin Kural:**
-  - Eklentiden döndürülen tüm video kaynakları öncelikle parçalı HLS formatında (`ExtractorLinkType.M3U8`) teslim edilmelidir.
-  - Kaynak sunucuda sabit çözünürlükler (1080p, 720p, 480p) ayrık halde bulunsa bile, her biri CloudStream'e bağımsız parçalı akış (chunked HLS stream) olarak aktarılmalıdır.
+## 4. HLS / M3U8 Tek Kaynak — Parçalar Menüsü Zorunluluğu
+- **Zorunlu:** Gerçek bir HLS master manifest (`#EXT-X-STREAM-INF` veya ilgili track tanımları) tespit edildiğinde, aynı sunucunun kalite varyantlarını ayrı `Sources` bağlantıları olarak listeleme.
+- Master M3U8 URL'sini **tek** `ExtractorLinkType.M3U8` kaynağı olarak döndür. `M3u8Helper.generateM3u8` ile varyantları kaynaklara ayırma. Uyarlanabilir çözünürlük ve ses/parça seçimini CloudStream oynatıcısının **Parçalar (Tracks)** menüsüne bırak.
+- Tekilleştirmeyi sunucu, yayın ve dil varyantı bazında yap; bağımsız ses dillerini veya başka gerçek sunucuları yanlışlıkla silme.
+- Kaynak yalnız bağımsız sabit çözünürlüklü MP4 veya media playlist veriyorsa olmayan bir HLS masterı varmış gibi gösterme. Aynı sunucu/dil için ana skill'deki tek en yüksek kaliteli bağlantı politikasına uy; gerçek formatı doğru belirt.
+- HTTP 200, manifest sözdizimi ve gerçek CloudStream oynatma sonucunu ayrı ayrı doğrula.
 
 ---
 
