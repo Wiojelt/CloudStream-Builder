@@ -54,3 +54,8 @@ The caption transcript alone is **not** a complete tutorial study. The new [00:0
 ### Görsel Gradle, metadata ve Git commit/push analizi 60:00–63:43
 
 [Gerçek IDE ve son kare Git push raporu](../code-audit/60-63-screen-and-code.md). Son 3:43'ten 56 tam kare ve 12 seçilmiş yakın plan: `build.gradle.kts` düzeni (`version`, `authors`, `language`, `status`, `tvTypes`, `iconUrl`), dört kaynak dosyasının commit edilmesi ve son karede `Pushed 1 commit to origin/master` bildirimi. Bu `.cs3` kurulumu kanıtı değildir. [Sentetik 19 test](../code-audit/fixtures/test_metadata_60_63.py) release kanıt kapılarını ayrıştırır.
+
+
+### Son gerçek kod/Gradle/Git incelemesi — 60:00–63:43
+
+[60:00–63:43 ekran ve metadata analizi](../code-audit/60-63-screen-and-code.md), [19 metadata/release kanıt testi](../code-audit/fixtures/test_metadata_60_63.py), [main uyumluluk planı](../MAIN_RECONCILIATION.md). Son ekran kaydında IntelliJ `Pushed 1 commit to origin/master` bildirimi gösterir, ancak indirilebilir CloudStream `.cs3` kurulumu kanıtı değildir. Bu görsel kod incelemesi, ekran altyazısı dökümünden ayrı çalışmadır.
