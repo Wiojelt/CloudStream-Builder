@@ -31,7 +31,7 @@ jobs:
       - name: Restore verified official Gradle 9.4.1 wrapper
         run: |
           set -euo pipefail
-          curl --fail --location --silent --show-error https://services.gradle.org/distributions/gradle-9.4.1-wrapper.jar -o gradle/wrapper/gradle-wrapper.jar
+          curl --fail --location --silent --show-error https://raw.githubusercontent.com/gradle/gradle/v9.4.1/gradle/wrapper/gradle-wrapper.jar -o gradle/wrapper/gradle-wrapper.jar
           echo '55243ef57851f12b070ad14f7f5bb8302daceeebc5bce5ece5fa6edb23e1145c  gradle/wrapper/gradle-wrapper.jar' | sha256sum --check
           if ! git diff --quiet -- gradle/wrapper/gradle-wrapper.jar; then
             git config user.name 'github-actions[bot]'
