@@ -1543,17 +1543,13 @@ open class MegaPlay : ExtractorApi() {
                 return
             }
 
-            val generated = M3u8Helper.generateM3u8(serverName, m3u8, host, headers = playbackHeaders)
-            if (generated.isNotEmpty()) {
-                generated.forEach(callback)
-            } else {
-                callback(
-                    newExtractorLink(serverName, serverName, m3u8, ExtractorLinkType.M3U8) {
-                        this.referer = "$host/"
-                        this.headers = playbackHeaders
-                    }
-                )
-            }
+            // Preserve the site's original HLS master as one source.
+            callback(
+                newExtractorLink(serverName, serverName, m3u8, ExtractorLinkType.M3U8) {
+                    this.referer = "$host/"
+                    this.headers = playbackHeaders
+                }
+            )
 
             try {
                 root.tracks.forEach { track ->
