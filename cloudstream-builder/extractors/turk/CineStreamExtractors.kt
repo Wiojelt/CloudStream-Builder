@@ -1103,11 +1103,18 @@ object CineStreamExtractors {
                 val server = src.getString("server")
                 val m3u8 = src.getString("url")
 
-                M3u8Helper.generateM3u8(
-                    "Hexa ${server.capitalizeServer()}",
-                    m3u8,
-                    "https://hexa.su/",
-                ).forEach(callback)
+                // Keep one master playlist per server; player lists qualities in Tracks.
+                if (m3u8.isBlank()) continue
+                callback(
+                    newExtractorLink(
+                        "Hexa ${server.capitalizeServer()}",
+                        "Hexa ${server.capitalizeServer()}",
+                        m3u8,
+                        ExtractorLinkType.M3U8
+                    ) {
+                        this.referer = "https://hexa.su/"
+                    }
+                )
             }
         }
     }
