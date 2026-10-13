@@ -743,11 +743,13 @@ open class SuperVideo : ExtractorApi() {
             res.document.selectFirst("script:containsData(function(p,a,c,k,e,d))")?.data()
         val unpacked = getAndUnpack(script ?: return)
         val m3u8 = Regex("file:\"(.*?m3u8.*?)").find(unpacked)?.groupValues?.getOrNull(1) ?:""
-        M3u8Helper.generateM3u8(
-            this.name,
-            m3u8,
-            referer = "$mainUrl/",
-        ).forEach(callback)
+        if (m3u8.isBlank()) return
+        // Preserve the original HLS URL so CloudStream exposes qualities in Tracks.
+        callback(
+            newExtractorLink(name, name, m3u8, ExtractorLinkType.M3U8) {
+                this.referer = "$mainUrl/"
+            }
+        )
     }
 }
 
@@ -890,7 +892,13 @@ class Akamaicdn : ExtractorApi() {
         val args = regex.findAll(cleaned).map { it.groupValues[1].trim() }.toList()
         val token = args.lastOrNull().orEmpty()
         val m3u8 = "$mainUrl/m3u8/${args[1]}/${args[2]}/master.txt?s=1&cache=1&plt=$token"
-        M3u8Helper.generateM3u8(name, m3u8, mainUrl, headers = headers).forEach(callback)
+        // This host constructs its master playlist URL; do not split variants.
+        callback(
+            newExtractorLink(name, name, m3u8, ExtractorLinkType.M3U8) {
+                this.referer = mainUrl
+                this.headers = headers
+            }
+        )
     }
 }
 
