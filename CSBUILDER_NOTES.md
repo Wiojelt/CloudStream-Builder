@@ -84,3 +84,14 @@
   - Tüm dizi ve anime sağlayıcılarında `mainPage` listesinin ilk (en üst) sırasına mutlaka **"Son Bölümler"** veya **"Yeni Eklenen Bölümler"** eklenmelidir.
   - Kart formatı: Dizi Adı, Sezon ve Bölüm Numarası (`Dizi Adı • X. Sezon Y. Bölüm` veya `Anime • Z. Bölüm`), bölüm görseli/posteri ve doğrudan bölüme giden bağlantı sağlanmalıdır.
   - Sitenin anasayfasında veya `/son-bolumler`, `/tum-bolumler`, `/akis` gibi akış sayfalarında yer alan bölüm listesi bu kategoriye bağlanmalıdır.
+
+---
+
+## 9. CloudStream Error 2004 ve Dinamik Poster Çözümleme
+- **Error 2004 Kök Nedeni (ExoPlayer Media Source & Referer Zehirlenmesi):**
+  - CloudStream'deki Error 2004, ExoPlayer'ın medya kaynağına bağlanırken `HTTP 403 Forbidden` veya container tanıma hatası alması durumunda fırlatılır.
+  - Video kaynağı Twitter/X CDN (`video.twimg.com`) veya korumalı harici CDN'lerde barındırıldığında, kazıyıcı sitenin domainini (`Referer: https://trydrama.app/`) göndermek CDN'in Hotlink Protection mekanizmasını tetikleyerek 403 Forbidden döndürür.
+  - **Çözüm**: Twitter CDN için `referer = "https://twitter.com/"` ve `headers = mapOf("User-Agent" to DRAMA_UA, "Referer" to "https://twitter.com/")` uygulanmalıdır. Harici CDN'lere asla yetkisiz kaynak domaini Referer olarak verilmemelidir.
+- **Dinamik / Hash'li Poster Kayıpları:**
+  - Modern SSR (Next.js vb.) sitelerde afişler `slug.webp` yerine derleme hash'i (`slug-100e58de.webp`) veya dil ön eki (`dublajli-slug.webp`) içerir.
+  - Hardcode afiş yolları kartların %30-50'sinde afişin boş kalmasına (404) sebep olur. Afiş dosya adı doğrudan kart HTML'inden (`(?:url=%2Fposters%2F|/posters/)([^&"'\s\\]+\.webp)`) çekilmelidir.
