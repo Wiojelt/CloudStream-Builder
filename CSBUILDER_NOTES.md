@@ -95,3 +95,20 @@
 - **Dinamik / Hash'li Poster Kayıpları:**
   - Modern SSR (Next.js vb.) sitelerde afişler `slug.webp` yerine derleme hash'i (`slug-100e58de.webp`) veya dil ön eki (`dublajli-slug.webp`) içerir.
   - Hardcode afiş yolları kartların %30-50'sinde afişin boş kalmasına (404) sebep olur. Afiş dosya adı doğrudan kart HTML'inden (`(?:url=%2Fposters%2F|/posters/)([^&"'\s\\]+\.webp)`) çekilmelidir.
+
+---
+
+## 10. Film ve Kanal Detayında 'Web / Tarayıcıda Aç' Butonunu Gizleme Standardı (Anti-Web/Origin Exposure)
+- **Kural & Mekanizma:**
+  - CloudStream detay arayüzü (`ResultFragment`), `SearchResponse.url` veya `LoadResponse.url` `http://` veya `https://` ile başladığında sağ üst köşede 'Tarayıcıda Aç' (dünya/web ikonu) butonu gösterir.
+  - Bu buton tıklandığında kullanıcının harici tarayıcısında kazınan asıl web sitesi açılır ve kaynak site domaini ifşa olur.
+- **Standart Çözüm:**
+  - `SearchResponse` ve `LoadResponse` içindeki `url` alanında standart `http(s)://` yerine eklentiye özel dahili URI şeması (`<provider>://<id_veya_slug>`, örn: `trdrama://$slug`, `mientv://$id`) sunulmalıdır.
+  - `load(url)` fonksiyonunda gelen URL `url.substringAfter("<provider>://")` veya esnek ayıklama ile çözülmelidir.
+  - Böylece CloudStream arayüzünde 'Web' butonu tamamen gizlenir, backend ve kaynak site adresleri son kullanıcıya kesinlikle gösterilmez.
+
+---
+
+## 11. İsim ve Logo Kişiselleştirme Kuralı (Zorunlu Kullanıcı Kuralı)
+- Yeni veya dönüştürülen eklentilerde ASLA kaynak sitenin resmi adı veya orijinal logosu doğrudan kullanılmaz.
+- Eklenti hazırlanmadan önce kullanıcıya her zaman istenen isim ve özel logo yapılıp yapılmayacağı sorulmalıdır. Tüm sağlayıcılar markasızlaştırılmış / anlaşmaya uygun özel kimliklerle yayınlanır.
