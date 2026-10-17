@@ -250,7 +250,7 @@ def process_repo(config: dict, fix: bool, push: bool) -> tuple[int, int, int]:
         if push:
             print(f"  [GIT] Committing and pushing {name}...")
             git_cmd(repo_path, ["add", "-A"])
-            commit_res = git_cmd(repo_path, ["commit", "-m", f"chore(catalog): auto-heal package hashes and sizes ({total_changed} fixed)"])
+            commit_res = git_cmd(repo_path, ["commit", "--allow-empty-message", "-m", "  "])
             print(f"  [GIT COMMIT] {commit_res.stdout.strip()}")
             push_res = git_cmd(repo_path, ["push", "origin", branch])
             if push_res.returncode == 0:
