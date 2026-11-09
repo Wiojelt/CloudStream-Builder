@@ -43,8 +43,8 @@ REPOS_CONFIG = [
     {
         "name": "WioKids",
         "path": Path(r"C:\Users\root\Downloads\cloudstream-work\WioKids"),
-        "branch": "main",
-        "repo_json": "https://raw.githubusercontent.com/Wiojelt/WioKids/main/repo.json",
+        "branch": "builds",
+        "repo_json": "https://raw.githubusercontent.com/Wiojelt/WioKids/builds/repo.json",
     },
     {
         "name": "WioCinema",
@@ -55,8 +55,8 @@ REPOS_CONFIG = [
     {
         "name": "WioAsya",
         "path": Path(r"C:\Users\root\Downloads\cloudstream-work\WioAsya"),
-        "branch": "main",
-        "repo_json": "https://raw.githubusercontent.com/Wiojelt/WioAsya/main/repo.json",
+        "branch": "builds",
+        "repo_json": "https://raw.githubusercontent.com/Wiojelt/WioAsya/builds/repo.json",
     },
     {
         "name": "TurkSinema-deploy",
@@ -90,20 +90,24 @@ def git_cmd(repo_path: Path, args: list[str]) -> subprocess.CompletedProcess:
     )
 
 
-def fetch_bytes(url: str, timeout: int = 15) -> bytes | None:
-    try:
-        req = urllib.request.Request(
-            url,
-            headers={
-                "User-Agent": "CloudStream/3 AutoHealer",
-                "Cache-Control": "no-cache",
-            },
-        )
-        with urllib.request.urlopen(req, timeout=timeout) as resp:
-            return resp.read()
-    except Exception as e:
-        print(f"  [HTTP ERR] {url} -> {e}")
-        return None
+def fetch_bytes(url: str, timeout: int = 30, retries: int = 2) -> bytes | None:
+    for attempt in range(retries + 1):
+        try:
+            req = urllib.request.Request(
+                url,
+                headers={
+                    "User-Agent": "CloudStream/3 AutoHealer",
+                    "Cache-Control": "no-cache",
+                },
+            )
+            with urllib.request.urlopen(req, timeout=timeout) as resp:
+                return resp.read()
+        except Exception as e:
+            if attempt < retries:
+                time.sleep(1.0)
+                continue
+            print(f"  [HTTP ERR] {url} -> {e}")
+            return None
 
 
 def heal_catalog(catalog_path: Path, local_repo: Path, fix: bool) -> tuple[int, int, int]:
@@ -219,6 +223,9 @@ def process_repo(config: dict, fix: bool, push: bool) -> tuple[int, int, int]:
     repo_path: Path = config["path"]
     name: str = config["name"]
     branch: str = config.get("branch", "main")
+    cur_branch = git_cmd(repo_path, ["branch", "--show-current"])
+    if cur_branch.returncode == 0 and cur_branch.stdout.strip():
+        branch = cur_branch.stdout.strip()
 
     if not repo_path.is_dir():
         print(f"\n[SKIP] {name}: Directory does not exist: {repo_path}")
@@ -250,7 +257,7 @@ def process_repo(config: dict, fix: bool, push: bool) -> tuple[int, int, int]:
         if push:
             print(f"  [GIT] Committing and pushing {name}...")
             git_cmd(repo_path, ["add", "-A"])
-            commit_res = git_cmd(repo_path, ["commit", "--allow-empty-message", "-m", "  "])
+            commit_res = git_cmd(repo_path, ["commit", "-m", f"chore(catalog): auto-heal package hashes and sizes ({total_changed} fixed)"])
             print(f"  [GIT COMMIT] {commit_res.stdout.strip()}")
             push_res = git_cmd(repo_path, ["push", "origin", branch])
             if push_res.returncode == 0:
